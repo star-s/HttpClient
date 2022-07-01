@@ -7,10 +7,6 @@
 
 import Foundation
 
-public struct VoidResponse: Decodable {
-	public init() { }
-}
-
 public struct RawResponse: RawRepresentable, Decodable {
 	public let rawValue: Data
 

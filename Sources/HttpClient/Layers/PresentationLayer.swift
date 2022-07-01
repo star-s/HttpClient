@@ -70,13 +70,8 @@ public extension PresentationLayer {
 	}
 	
 	func decode<T: Decodable>(response: (data: Data, response: URLResponse)) async throws -> T {
-		switch T.self {
-		case is VoidResponse.Type:
-			return VoidResponse() as! T
-		case is RawResponse.Type:
+		if T.self is RawResponse.Type {
 			return RawResponse(rawValue: response.data) as! T
-		default:
-			break
 		}
 		let uti = response.response.contentUTI ?? kUTTypeData
 

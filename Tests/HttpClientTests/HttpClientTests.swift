@@ -1,11 +1,90 @@
 import XCTest
 @testable import HttpClient
 
+extension HttpClientTests: HttpClient, PresentationLayer, URLSessionTransportLayer {
+	typealias Path = String//StaticString
+}
+
 final class HttpClientTests: XCTestCase {
-    func testExample() throws {
+    func testExample() async throws {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
-        XCTAssertEqual(HttpClient().text, "Hello, World!")
+		let html: String = try await get("http://ya.ru", parameters: Parameters.void)
+		XCTAssertFalse(html.isEmpty)
     }
+
+	func testPlainTextDecodingUUID() async throws {
+		let decoder = PlaintextDecoder(encoding: .ascii)
+
+		let input = UUID()
+		guard let uuidData = input.uuidString.data(using: decoder.encoding) else {
+			return XCTFail("Can't get data with encoding: \(decoder.encoding)")
+		}
+		let output = try decoder.decode(UUID.self, from: uuidData)
+		XCTAssertEqual(input, output)
+	}
+
+	func testPlainTextDecodingURL() async throws {
+		let decoder = PlaintextDecoder(encoding: .ascii)
+
+		guard let inputUrl = URL(string: "http://somewere.net") else {
+			return XCTFail("Can't create url")
+		}
+		guard let urlData = inputUrl.absoluteString.data(using: decoder.encoding) else {
+			return XCTFail("Can't get data with encoding: \(decoder.encoding)")
+		}
+		let outputUrl = try decoder.decode(URL.self, from: urlData)
+		XCTAssertEqual(inputUrl, outputUrl)
+	}
+
+	func testPlainTextDecodingDataL() async throws {
+		let decoder = PlaintextDecoder(encoding: .ascii)
+
+		guard let inputData = "sdfhdscdbcofcjosicjodsc".data(using: decoder.encoding) else {
+			return XCTFail("Can't get data with encoding: \(decoder.encoding)")
+		}
+		let outputData = try decoder.decode(Data.self, from: inputData)
+		XCTAssertEqual(inputData, outputData)
+	}
+
+	func testAgify() async throws {
+		struct Agify: AgifyApi, PresentationLayer, URLSessionTransportLayer {
+			typealias Path = String
+		}
+		let data = try await Agify().getData(name: "bella")
+		XCTAssertEqual(data.name, "bella")
+	}
+	
+	func testJsonplaceholder() async throws {
+		struct Jsonplaceholder: JsonplaceholderApi, PresentationLayer, URLSessionTransportLayer {
+			typealias Path = String
+		}
+		let data = try await Jsonplaceholder().fetchPost(number: 14)
+		XCTAssertEqual(data.id, 14)
+	}
+	
+	func testCustomHeaders() async throws {
+		struct DefaultPresenter: PresentationLayer {
+		}
+		
+		let requestWithDefaultHeaders = try await DefaultPresenter().prepare(get: "http://somewere.org/", parameters: Parameters.void)
+		XCTAssertFalse(requestWithDefaultHeaders.headers.isEmpty)
+		
+		struct CustomHeadersPresenter: PresentationLayerWithCustomizations {
+			var headers: HTTPHeaders
+		}
+
+		let requestWithCustomHeader = try await CustomHeadersPresenter(headers: HTTPHeaders()).prepare(get: "http://somewere.org/", parameters: Parameters.void)
+		XCTAssertTrue(requestWithCustomHeader.headers.isEmpty)
+	}
+
+	func testDataURL() async throws {
+		let input = "некоторый текст который мы передадим в виде урла"
+		guard let path = input.plainText(encoding: .utf8)?.dataURL()?.absoluteString else {
+			return XCTFail("Can't create url")
+		}
+		let output: String = try await get(path, parameters: Parameters.void)
+		XCTAssertEqual(input, output)
+	}
 }

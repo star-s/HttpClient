@@ -14,4 +14,10 @@ extension String {
 			DataUrlBuilder(kUTTypePlainText, data: $0, encoding: .charset(encoding))
 		}
 	}
+
+	func json() -> DataUrlBuilder? {
+		data(using: .utf8).map {
+			DataUrlBuilder(kUTTypeJSON, data: $0, encoding: .base64)
+		}
+	}
 }

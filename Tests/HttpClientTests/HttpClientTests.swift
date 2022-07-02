@@ -83,7 +83,9 @@ final class HttpClientTests: XCTestCase {
 		XCTAssertTrue(requestWithCustomHeader.headers.isEmpty)
 	}
 
-	func testDataURL() async throws {
+	// MARK: - Data URL
+
+	func testPlainTextDataURL() async throws {
 		let input = "некоторый текст который мы передадим в виде урла"
 		guard let path = input.plainText(encoding: .utf8)?.dataURL()?.absoluteString else {
 			return XCTFail("Can't create url")
@@ -91,6 +93,22 @@ final class HttpClientTests: XCTestCase {
 		let output: String = try await DefaultHttpClien().get(path, parameters: Parameters.void)
 		XCTAssertEqual(input, output)
 	}
+
+	func testJsonDataURL() async throws {
+		struct TestData: Codable, Equatable {
+			var intValue = 234
+			var stringValue = "some test"
+			var dateValue = Date()
+		}
+		let input = TestData()
+		guard let path = try JSONEncoder().encode(input).urlRepresentation(mimeType: kUTTypeJSON, encoding: .base64)?.absoluteString else {
+			return XCTFail("Can't create url")
+		}
+		let output: TestData = try await DefaultHttpClien().get(path, parameters: Parameters.void)
+		XCTAssertEqual(input, output)
+	}
+
+	// MARK: - JSON wrapping
 
 	func testJsonWrappingInt() async throws {
 		let value = 244

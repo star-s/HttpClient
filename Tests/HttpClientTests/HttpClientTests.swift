@@ -2,7 +2,11 @@ import XCTest
 @testable import HttpClient
 
 extension HttpClientTests: HttpClient, PresentationLayer, URLSessionTransportLayer {
-	typealias Path = String//StaticString
+	typealias Path = StaticString
+}
+
+struct DefaultHttpClien: HttpClient, PresentationLayer, URLSessionTransportLayer {
+	typealias Path = String
 }
 
 final class HttpClientTests: XCTestCase {
@@ -84,7 +88,7 @@ final class HttpClientTests: XCTestCase {
 		guard let path = input.plainText(encoding: .utf8)?.dataURL()?.absoluteString else {
 			return XCTFail("Can't create url")
 		}
-		let output: String = try await get(path, parameters: Parameters.void)
+		let output: String = try await DefaultHttpClien().get(path, parameters: Parameters.void)
 		XCTAssertEqual(input, output)
 	}
 

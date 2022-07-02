@@ -87,4 +87,18 @@ final class HttpClientTests: XCTestCase {
 		let output: String = try await get(path, parameters: Parameters.void)
 		XCTAssertEqual(input, output)
 	}
+
+	func testJsonWrappingInt() async throws {
+		let value = 244
+		let data = Data("\(value)".utf8)
+		let decodedValue = try JSONDecoder().decodeWithWrapping(Int.self, from: data)
+		XCTAssertEqual(value, decodedValue)
+	}
+
+	func testJsonWrappingString() async throws {
+		let string = "вдм ьащомшагтмв"
+		let data = Data("\"\(string)\"".utf8)
+		let decodedString = try JSONDecoder().decodeWithWrapping(String.self, from: data)
+		XCTAssertEqual(string, decodedString)
+	}
 }

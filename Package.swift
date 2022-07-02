@@ -35,6 +35,6 @@ let package = Package(
 			dependencies: []),
         .testTarget(
             name: "HttpClientTests",
-            dependencies: ["HttpClient", "HttpClientUtilities"]),
+            dependencies: ["HttpClient"]),
     ]
 )

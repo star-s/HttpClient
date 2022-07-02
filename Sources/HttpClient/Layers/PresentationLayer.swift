@@ -64,7 +64,7 @@ public extension PresentationLayer {
 			return response
 		}
 		guard httpResponse.statusCode == 200 else {
-			throw URLError(.badServerResponse)
+			throw httpResponse
 		}
 		return response
 	}

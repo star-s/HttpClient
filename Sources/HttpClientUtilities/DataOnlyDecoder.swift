@@ -11,12 +11,13 @@ public struct DataOnlyDecoder {
 
 	public init() { }
 
-	public func decode(_ type: Data.Type, from data: Data) throws -> Data {
-		data
-	}
-
 	public func decode<T>(_ type: T.Type, from data: Data) throws -> T where T : Decodable {
-		throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: [], debugDescription: "Unsupported data type - \(type)"))
+		switch type.self {
+		case is Data.Type:
+			return data as! T
+		default:
+			throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: [], debugDescription: "Unsupported data type - \(type)"))
+		}
 	}
 }
 

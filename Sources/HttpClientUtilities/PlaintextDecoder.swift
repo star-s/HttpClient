@@ -10,22 +10,21 @@ public struct PlaintextDecoder {
 		self.encoding = encoding
 	}
 
-	public func decode(_ type: Data.Type, from data: Data) throws -> Data {
-		data
-	}
-
-	public func decode(_ type: URL.Type, from data: Data) throws -> URL {
-		guard let string = String(data: data, encoding: encoding) else {
-			throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "Can't make string with encoding \(encoding)"))
-		}
-		guard let url = URL(string: string) else {
-			throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "Bad string \(string)"))
-		}
-		return url
-	}
-
 	public func decode<T>(_ type: T.Type, from data: Data) throws -> T where T : Decodable {
-		try T(from: _PlaintextDecoder(plaintext: String(data: data, encoding: encoding)))
+		switch type.self {
+		case is Data.Type:
+			return data as! T
+		case is URL.Type:
+			guard let string = String(data: data, encoding: encoding) else {
+				throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "Can't make string with encoding \(encoding)"))
+			}
+			guard let url = URL(string: string) else {
+				throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "Bad string \(string)"))
+			}
+			return url as! T
+		default:
+			return try T(from: _PlaintextDecoder(plaintext: String(data: data, encoding: encoding)))
+		}
 	}
 }
 

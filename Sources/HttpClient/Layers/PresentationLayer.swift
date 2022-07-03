@@ -81,10 +81,7 @@ public extension PresentationLayer {
 		if UTTypeConformsTo(uti, kUTTypeText) {
 			return try PlaintextDecoder(encoding: response.response.textEncoding ?? .ascii).decode(T.self, from: response.data)
 		}
-		if UTTypeConformsTo(uti, kUTTypeData) {
-			return try DataOnlyDecoder().decode(T.self, from: response.data)
-		}
-		throw URLError(.cannotDecodeContentData)
+		return try DataOnlyDecoder().decode(T.self, from: response.data)
 	}
 
 	var jsonDecoder: JSONDecoder {

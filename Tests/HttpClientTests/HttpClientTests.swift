@@ -6,7 +6,7 @@ extension HttpClientTests: HttpClient, PresentationLayer, URLSessionTransportLay
 	typealias Path = StaticString
 }
 
-struct DefaultHttpClien: HttpClient, PresentationLayer, URLSessionTransportLayer {
+struct DefaultHttpClient: HttpClient, PresentationLayer, URLSessionTransportLayer {
 	typealias Path = URL
 }
 
@@ -43,7 +43,7 @@ final class HttpClientTests: XCTestCase {
 		XCTAssertEqual(inputUrl, outputUrl)
 	}
 
-	func testPlainTextDecodingDataL() async throws {
+	func testPlainTextDecodingData() async throws {
 		let decoder = PlaintextDecoder(encoding: .ascii)
 
 		guard let inputData = "sdfhdscdbcofcjosicjodsc".data(using: decoder.encoding) else {
@@ -91,7 +91,7 @@ final class HttpClientTests: XCTestCase {
 		guard let url = input.plainText(encoding: .utf8)?.dataURL() else {
 			return XCTFail("Can't create url")
 		}
-		let output: String = try await DefaultHttpClien().get(url, parameters: Parameters.void)
+		let output: String = try await DefaultHttpClient().get(url, parameters: Parameters.void)
 		XCTAssertEqual(input, output)
 	}
 
@@ -105,7 +105,7 @@ final class HttpClientTests: XCTestCase {
 		guard let url = try JSONEncoder().encode(input).urlRepresentation(mimeType: kUTTypeJSON, encoding: .base64) else {
 			return XCTFail("Can't create url")
 		}
-		let output: TestData = try await DefaultHttpClien().get(url, parameters: Parameters.void)
+		let output: TestData = try await DefaultHttpClient().get(url, parameters: Parameters.void)
 		XCTAssertEqual(input, output)
 	}
 
@@ -125,3 +125,17 @@ final class HttpClientTests: XCTestCase {
 		XCTAssertEqual(string, decodedString)
 	}
 }
+
+
+#if canImport(PDFKit)
+import PDFKit
+
+extension HttpClientTests {
+	func testPDF() async throws {
+		let data: Data = try await DefaultHttpClient().get("https://www.rfc-editor.org/rfc/pdfrfc/rfc2045.txt.pdf", parameters: Parameters.void)
+		let document = PDFDocument(data: data)
+		XCTAssertNotNil(document)
+	}
+}
+
+#endif

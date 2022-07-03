@@ -126,12 +126,11 @@ final class HttpClientTests: XCTestCase {
 	}
 }
 
-
 #if canImport(PDFKit)
 import PDFKit
 
 extension HttpClientTests {
-	func testPDF() async throws {
+	func testLoadPDF() async throws {
 		let data: Data = try await DefaultHttpClient().get("https://www.rfc-editor.org/rfc/pdfrfc/rfc2045.txt.pdf", parameters: Parameters.void)
 		let document = PDFDocument(data: data)
 		XCTAssertNotNil(document)

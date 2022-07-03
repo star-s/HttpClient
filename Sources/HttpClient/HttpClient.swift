@@ -43,7 +43,7 @@ public extension HttpClient where Path == URL {
 	}
 }
 
-// MARK: -
+// MARK: - ApplicationLayer
 
 public extension HttpClient {
 	

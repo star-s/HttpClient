@@ -26,14 +26,26 @@ public extension HttpClient where Self: TransportLayer {
 	var transport: Self { self }
 }
 
+// MARK: - Make URL from Path
+
 public extension HttpClient {
-	
 	func makeURL(from path: Path) throws -> URL {
 		guard let url = URL(string: String(describing: path)) else {
 			throw URLError(.badURL)
 		}
 		return url
 	}
+}
+
+public extension HttpClient where Path == URL {
+	func makeURL(from path: Path) throws -> URL {
+		path
+	}
+}
+
+// MARK: -
+
+public extension HttpClient {
 	
 	func post<P: Encodable, T: Decodable>(_ path: Path, parameters: P) async throws -> T {
 		let request = try await presenter.prepare(post: makeURL(from: path), parameters: parameters)

@@ -1,12 +1,13 @@
 import XCTest
 @testable import HttpClient
+import CoreServices
 
 extension HttpClientTests: HttpClient, PresentationLayer, URLSessionTransportLayer {
 	typealias Path = StaticString
 }
 
 struct DefaultHttpClien: HttpClient, PresentationLayer, URLSessionTransportLayer {
-	typealias Path = String
+	typealias Path = URL
 }
 
 final class HttpClientTests: XCTestCase {
@@ -87,10 +88,10 @@ final class HttpClientTests: XCTestCase {
 
 	func testPlainTextDataURL() async throws {
 		let input = "некоторый текст который мы передадим в виде урла"
-		guard let path = input.plainText(encoding: .utf8)?.dataURL()?.absoluteString else {
+		guard let url = input.plainText(encoding: .utf8)?.dataURL() else {
 			return XCTFail("Can't create url")
 		}
-		let output: String = try await DefaultHttpClien().get(path, parameters: Parameters.void)
+		let output: String = try await DefaultHttpClien().get(url, parameters: Parameters.void)
 		XCTAssertEqual(input, output)
 	}
 
@@ -101,10 +102,10 @@ final class HttpClientTests: XCTestCase {
 			var dateValue = Date()
 		}
 		let input = TestData()
-		guard let path = try JSONEncoder().encode(input).urlRepresentation(mimeType: kUTTypeJSON, encoding: .base64)?.absoluteString else {
+		guard let url = try JSONEncoder().encode(input).urlRepresentation(mimeType: kUTTypeJSON, encoding: .base64) else {
 			return XCTFail("Can't create url")
 		}
-		let output: TestData = try await DefaultHttpClien().get(path, parameters: Parameters.void)
+		let output: TestData = try await DefaultHttpClien().get(url, parameters: Parameters.void)
 		XCTAssertEqual(input, output)
 	}
 

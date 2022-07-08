@@ -11,6 +11,9 @@ struct DefaultHttpClient: HttpClient, PresentationLayer, URLSessionTransportLaye
 }
 
 final class HttpClientTests: XCTestCase {
+
+	let httpClient = DefaultHttpClient()
+
     func testExample() async throws {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
@@ -91,7 +94,7 @@ final class HttpClientTests: XCTestCase {
 		guard let url = input.plainText(encoding: .utf8)?.dataURL() else {
 			return XCTFail("Can't create url")
 		}
-		let output: String = try await DefaultHttpClient().get(url, parameters: Parameters.void)
+		let output: String = try await httpClient.get(url, parameters: Parameters.void)
 		XCTAssertEqual(input, output)
 	}
 
@@ -105,7 +108,7 @@ final class HttpClientTests: XCTestCase {
 		guard let url = try JSONEncoder().encode(input).urlRepresentation(mimeType: kUTTypeJSON, encoding: .base64) else {
 			return XCTFail("Can't create url")
 		}
-		let output: TestData = try await DefaultHttpClient().get(url, parameters: Parameters.void)
+		let output: TestData = try await httpClient.get(url, parameters: Parameters.void)
 		XCTAssertEqual(input, output)
 	}
 
@@ -131,8 +134,7 @@ import PDFKit
 
 extension HttpClientTests {
 	func testLoadPDF() async throws {
-		let data: Data = try await DefaultHttpClient().get("https://www.rfc-editor.org/rfc/pdfrfc/rfc2045.txt.pdf", parameters: Parameters.void)
-		let document = PDFDocument(data: data)
+		let document = try await PDFDocument(data: httpClient.get("https://www.rfc-editor.org/rfc/pdfrfc/rfc2045.txt.pdf", parameters: Parameters.void))
 		XCTAssertNotNil(document)
 	}
 }

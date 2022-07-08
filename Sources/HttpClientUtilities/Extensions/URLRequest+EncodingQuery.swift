@@ -9,8 +9,8 @@ import Foundation
 import Combine
 
 public extension URLRequest {
-    
-    func encodingQuery<P: Encodable, C: TopLevelEncoder>(_ parameters: P, coder: C) throws -> URLRequest where C.Output == String {
+
+    func with<P: Encodable, C: TopLevelEncoder>(query parameters: P, coder: C) throws -> URLRequest where C.Output == String {
         let query = try coder.encode(parameters)
         if query.isEmpty {
             return self
@@ -23,7 +23,7 @@ public extension URLRequest {
         return request
     }
 
-    func encodingQuery<P: Encodable, C: TopLevelEncoder>(_ parameters: P, coder: C) throws -> URLRequest where C.Output == Data {
+    func with<P: Encodable, C: TopLevelEncoder>(query parameters: P, coder: C) throws -> URLRequest where C.Output == Data {
         let queryData = try coder.encode(parameters)
         if queryData.isEmpty {
             return self

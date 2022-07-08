@@ -26,32 +26,32 @@ public extension PresentationLayerWithCustomizations {
 	}
 
 	func encodeQuery<T: Encodable>(request: URLRequest, parameters: T) throws -> URLRequest {
-		try request.encodingQuery(parameters, coder: URLEncodedFormEncoder())
+		try request.with(query: parameters, coder: URLEncodedFormEncoder())
 	}
 
 	func encodeBody<T: Encodable>(request: URLRequest, parameters: T) throws -> URLRequest {
-		try request.encodingBody(parameters, coder: jsonEncoder, contentType: "application/json")
+		try request.with(body: parameters, coder: jsonEncoder, contentType: "application/json")
 	}
 
 	// MARK: - PresentationLayer
 
 	func prepare<T: Encodable>(post url: URL, parameters: T) async throws -> URLRequest {
-		try encodeBody(request: URLRequest(url: url).settingHeaders(headers).settingMethod(.post), parameters: parameters)
+		try encodeBody(request: URLRequest(url: url).with(headers: headers).with(method: .post), parameters: parameters)
 	}
 	
 	func prepare<T: Encodable>(get url: URL, parameters: T) async throws -> URLRequest {
-		try encodeQuery(request: URLRequest(url: url).settingHeaders(headers), parameters: parameters)
+		try encodeQuery(request: URLRequest(url: url).with(headers: headers), parameters: parameters)
 	}
 	
 	func prepare<T: Encodable>(put url: URL, parameters: T) async throws -> URLRequest {
-		try encodeBody(request: URLRequest(url: url).settingHeaders(headers).settingMethod(.put), parameters: parameters)
+		try encodeBody(request: URLRequest(url: url).with(headers: headers).with(method: .put), parameters: parameters)
 	}
 	
 	func prepare<T: Encodable>(patch url: URL, parameters: T) async throws -> URLRequest {
-		try encodeBody(request: URLRequest(url: url).settingHeaders(headers).settingMethod(.patch), parameters: parameters)
+		try encodeBody(request: URLRequest(url: url).with(headers: headers).with(method: .patch), parameters: parameters)
 	}
 	
 	func prepare<T: Encodable>(delete url: URL, parameters: T) async throws -> URLRequest {
-		try encodeQuery(request: URLRequest(url: url).settingHeaders(headers).settingMethod(.delete), parameters: parameters)
+		try encodeQuery(request: URLRequest(url: url).with(headers: headers).with(method: .delete), parameters: parameters)
 	}
 }

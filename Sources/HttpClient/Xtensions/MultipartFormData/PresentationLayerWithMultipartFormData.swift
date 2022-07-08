@@ -18,7 +18,7 @@ public extension PresentationLayerWithMultipartFormData {
 			let formData = MultipartFormData()
 			multipartFormData(formData)
 			continuation.resume(with: Result {
-				try URLRequest(url: url).settingHeaders().settingMethod(.post).encodingBody(with: formData)
+				try URLRequest(url: url).with(headers: .default).with(method: .post).with(body: formData)
 			})
 		}
 	}
@@ -31,7 +31,7 @@ public extension PresentationLayerWithMultipartFormData where Self: Presentation
 			let formData = MultipartFormData()
 			multipartFormData(formData)
 			continuation.resume(with: Result {
-				try URLRequest(url: url).settingHeaders(headers).settingMethod(.post).encodingBody(with: formData)
+				try URLRequest(url: url).with(headers: headers).with(method: .post).with(body: formData)
 			})
 		}
 	}

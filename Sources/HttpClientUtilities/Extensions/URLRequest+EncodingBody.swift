@@ -9,21 +9,21 @@ import Foundation
 import Combine
 
 public extension URLRequest {
-    
-	func encodingBody<P: Encodable, C: TopLevelEncoder>(_ parameters: P, coder: C, contentType: String? = nil, charset: String.Encoding? = nil) throws -> URLRequest where C.Output == Data {
+
+	func with<P: Encodable, C: TopLevelEncoder>(body parameters: P, coder: C, contentType: String? = nil, charset: String.Encoding? = nil) throws -> URLRequest where C.Output == Data {
 		var request = self
 		request.httpBody = try coder.encode(parameters)
-		contentType.map {
+		if let contentType = contentType {
 			if let charset = charset?.IANACharSetName {
-				request.headers.update(.contentType($0 + "; charset=\(charset)"))
+				request.headers.update(.contentType(contentType + "; charset=\(charset)"))
 			} else {
-				request.headers.update(.contentType($0))
+				request.headers.update(.contentType(contentType))
 			}
 		}
 		return request
 	}
 
-	func encodingBody<P: Encodable, C: TopLevelEncoder>(_ parameters: P, coder: C, contentType: String? = nil) throws -> URLRequest where C.Output == String {
+	func with<P: Encodable, C: TopLevelEncoder>(body parameters: P, coder: C, contentType: String? = nil) throws -> URLRequest where C.Output == String {
 		var request = self
 		request.httpBody = try Data(coder.encode(parameters).utf8)
 		if let type = contentType {

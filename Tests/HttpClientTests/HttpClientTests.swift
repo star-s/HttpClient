@@ -2,11 +2,11 @@ import XCTest
 @testable import HttpClient
 import CoreServices
 
-extension HttpClientTests: HttpClient, PresentationLayer, URLSessionTransportLayer {
+extension HttpClientTests: HttpClient, PresentationLayer, URLSessionTransportLayerWithLogging, TransportLogger {
 	typealias Path = StaticString
 }
 
-struct DefaultHttpClient: HttpClient, PresentationLayer, URLSessionTransportLayer {
+struct DefaultHttpClient: HttpClient, PresentationLayer, URLSessionTransportLayerWithLogging, TransportLogger {
 	typealias Path = URL
 }
 
@@ -54,7 +54,7 @@ final class HttpClientTests: XCTestCase {
 	}
 
 	func testAgify() async throws {
-		struct Agify: AgifyApi, PresentationLayer, URLSessionTransportLayer {
+		struct Agify: AgifyApi, PresentationLayer, URLSessionTransportLayerWithLogging, TransportLogger {
 			typealias Path = String
 		}
 		let data = try await Agify().getData(name: "bella")
@@ -62,7 +62,7 @@ final class HttpClientTests: XCTestCase {
 	}
 	
 	func testJsonplaceholder() async throws {
-		struct Jsonplaceholder: JsonplaceholderApi, PresentationLayer, URLSessionTransportLayer {
+		struct Jsonplaceholder: JsonplaceholderApi, PresentationLayer, URLSessionTransportLayerWithLogging, TransportLogger {
 			typealias Path = String
 		}
 		let data = try await Jsonplaceholder().fetchPost(number: 14)

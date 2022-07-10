@@ -21,36 +21,36 @@ public extension HttpClientWithDecodingPath {
 	func post<P: Encodable, T: Decodable>(_ path: Path, parameters: P, decodingPath: [DecodingKey]?) async throws -> T {
 		let request = try await presenter.prepare(post: makeURL(from: path), parameters: parameters)
 		let response = try await transport.perform(request)
-		let validatedResponse = try await presenter.validate(response: response)
-		return try await presenter.decode(response: validatedResponse, decodingPath: decodingPath)
+		try await presenter.validate(response: response)
+		return try await presenter.decode(response: response, decodingPath: decodingPath)
 	}
 	
 	func get<P: Encodable, T: Decodable>(_ path: Path, parameters: P, decodingPath: [DecodingKey]?) async throws -> T {
 		let request = try await presenter.prepare(get: makeURL(from: path), parameters: parameters)
 		let response = try await transport.perform(request)
-		let validatedResponse = try await presenter.validate(response: response)
-		return try await presenter.decode(response: validatedResponse, decodingPath: decodingPath)
+		try await presenter.validate(response: response)
+		return try await presenter.decode(response: response, decodingPath: decodingPath)
 	}
 	
 	func put<P: Encodable, T: Decodable>(_ path: Path, parameters: P, decodingPath: [DecodingKey]?) async throws -> T {
 		let request = try await presenter.prepare(put: makeURL(from: path), parameters: parameters)
 		let response = try await transport.perform(request)
-		let validatedResponse = try await presenter.validate(response: response)
-		return try await presenter.decode(response: validatedResponse, decodingPath: decodingPath)
+		try await presenter.validate(response: response)
+		return try await presenter.decode(response: response, decodingPath: decodingPath)
 	}
 	
 	func patch<P: Encodable, T: Decodable>(_ path: Path, parameters: P, decodingPath: [DecodingKey]?) async throws -> T {
 		let request = try await presenter.prepare(patch: makeURL(from: path), parameters: parameters)
 		let response = try await transport.perform(request)
-		let validatedResponse = try await presenter.validate(response: response)
-		return try await presenter.decode(response: validatedResponse, decodingPath: decodingPath)
+		try await presenter.validate(response: response)
+		return try await presenter.decode(response: response, decodingPath: decodingPath)
 	}
 	
 	func delete<P: Encodable, T: Decodable>(_ path: Path, parameters: P, decodingPath: [DecodingKey]?) async throws -> T {
 		let request = try await presenter.prepare(delete: makeURL(from: path), parameters: parameters)
 		let response = try await transport.perform(request)
-		let validatedResponse = try await presenter.validate(response: response)
-		return try await presenter.decode(response: validatedResponse, decodingPath: decodingPath)
+		try await presenter.validate(response: response)
+		return try await presenter.decode(response: response, decodingPath: decodingPath)
 	}
 	
 	// MARK: -

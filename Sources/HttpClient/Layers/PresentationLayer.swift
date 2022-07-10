@@ -17,7 +17,7 @@ public protocol PresentationLayer {
     func prepare<T: Encodable>(patch url: URL, parameters: T) async throws -> URLRequest
     func prepare<T: Encodable>(delete url: URL, parameters: T) async throws -> URLRequest
     
-	func validate(response: (data: Data, response: URLResponse)) async throws -> (data: Data, response: URLResponse)
+	func validate(response: (data: Data, response: URLResponse)) async throws
 	func decode<T: Decodable>(response: (data: Data, response: URLResponse)) async throws -> T
 
 	var jsonDecoder: JSONDecoder { get }
@@ -59,14 +59,13 @@ public extension PresentationLayer {
 			.with(query: parameters, coder: URLEncodedFormEncoder())
 	}
 	
-	func validate(response: (data: Data, response: URLResponse)) async throws -> (data: Data, response: URLResponse) {
+	func validate(response: (data: Data, response: URLResponse)) async throws {
 		guard let httpResponse = response.response as? HTTPURLResponse else {
-			return response
+			return
 		}
 		guard httpResponse.statusCode == 200 else {
 			throw httpResponse
 		}
-		return response
 	}
 	
 	func decode<T: Decodable>(response: (data: Data, response: URLResponse)) async throws -> T {

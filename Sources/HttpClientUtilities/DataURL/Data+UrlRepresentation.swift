@@ -8,6 +8,13 @@
 import Foundation
 import CoreServices
 
+extension URL {
+	/// Returns true if the scheme is `data:`.
+	public var isDataURL: Bool {
+		scheme == "data"
+	}
+}
+
 public enum DataUrlEncoding: CustomStringConvertible {
 	case base64
 	case charset(String.Encoding)

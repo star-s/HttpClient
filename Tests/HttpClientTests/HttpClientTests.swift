@@ -94,6 +94,7 @@ final class HttpClientTests: XCTestCase {
 		guard let url = input.plainText(encoding: .utf8)?.dataURL() else {
 			return XCTFail("Can't create url")
 		}
+		XCTAssertTrue(url.isDataURL)
 		let output: String = try await httpClient.get(url, parameters: Parameters.void)
 		XCTAssertEqual(input, output)
 	}
@@ -108,6 +109,7 @@ final class HttpClientTests: XCTestCase {
 		guard let url = try JSONEncoder().encode(input).urlRepresentation(mimeType: kUTTypeJSON, encoding: .base64) else {
 			return XCTFail("Can't create url")
 		}
+		XCTAssertTrue(url.isDataURL)
 		let output: TestData = try await httpClient.get(url, parameters: Parameters.void)
 		XCTAssertEqual(input, output)
 	}

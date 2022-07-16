@@ -37,17 +37,20 @@ extension ExportedCookies {
 		}
 	}
 
-	public static func export(cookies: [HTTPCookie]) -> ExportedCookies {
+	public static func export(cookies: [HTTPCookie]) -> ExportedCookies? {
+		if cookies.isEmpty {
+			return nil
+		}
 		let properties = cookies.map(\.properties).compactMap({ $0 })
 		guard let data = try? PropertyListSerialization.data(fromPropertyList: properties, format: .binary, options: 0) else {
-			return ""
+			return nil
 		}
 		return ExportedCookies(rawValue: data.base64EncodedString())
 	}
 }
 
 extension Array where Element: HTTPCookie {
-	public func export() -> ExportedCookies {
+	public func export() -> ExportedCookies? {
 		.export(cookies: self)
 	}
 }

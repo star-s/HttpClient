@@ -129,6 +129,15 @@ final class HttpClientTests: XCTestCase {
 		let decodedString = try JSONDecoder().decodeWithWrapping(String.self, from: data)
 		XCTAssertEqual(string, decodedString)
 	}
+
+	// MARK: -
+
+	func testImportCookies() {
+		let exportedCookies: ExportedCookies = "YnBsaXN0MDCjARIY2AIDBAUGBwgJCgsMDQ4PEBFUUGF0aFZTZWN1cmVXVmVyc2lvbldDcmVhdGVkVVZhbHVlVkRvbWFpblROYW1lV0V4cGlyZXNRL1RUUlVFUTEjQcRA/woAAABfECBQMlEwQnRxNnRDSERtMjZrRmZEeExOallEZmFQSDUyNF4uaW5zdGFncmFtLmNvbVljc3JmdG9rZW4zQcUw8AoAAADYBwQCBQMGCAkTDAoUCxUWF14uaW5zdGFncmFtLmNvbSNBxCZeGAAAAF8QHFlweUVyd0FBQUFIZVlXN3pNbURZN3I0R2dod3NTbWlkM0HGB5GYAAAA2RkIAwkGBwIEBQsaCxcbHAoMFFhIdHRwT25seVZpZ19kaWRfECQ4RTVBODI5RS0xNzQzLTREM0UtQkQ3Ny04N0Q0MjkyQjMxQzleLmluc3RhZ3JhbS5jb20ACAAMAB0AIgApADEAOQA/AEYASwBTAFUAWgBcAGUAiACXAKEAqgC7AMoA0wDyAPYA/wESARsBIgFJAAAAAAAAAgEAAAAAAAAAHQAAAAAAAAAAAAAAAAAAAVg="
+
+		let cookies = exportedCookies.cookies
+		XCTAssertFalse(cookies.isEmpty)
+	}
 }
 
 #if canImport(PDFKit)

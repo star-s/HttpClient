@@ -7,7 +7,7 @@
 
 import Foundation
 import CoreServices
-#if canImport(AppKit)
+#if canImport(AppKit) && !targetEnvironment(macCatalyst)
 import AppKit
 
 extension NSImage {

@@ -59,14 +59,7 @@ public extension PresentationLayer {
 			.with(query: parameters, coder: URLEncodedFormEncoder())
 	}
 	
-	func validate(response: (data: Data, response: URLResponse)) async throws {
-		guard let httpResponse = response.response as? HTTPURLResponse else {
-			return
-		}
-		guard httpResponse.statusCode == 200 else {
-			throw httpResponse
-		}
-	}
+	func validate(response: (data: Data, response: URLResponse)) async throws {}
 	
 	func decode<T: Decodable>(response: (data: Data, response: URLResponse)) async throws -> T {
 		if T.self is RawResponse.Type {

@@ -19,6 +19,9 @@ let package = Package(
 		.library(
 			name: "HttpClientUtilities",
 			targets: ["HttpClientUtilities"]),
+		.library(
+			name: "URLEncodedForm",
+			targets: ["URLEncodedForm"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -29,9 +32,12 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "HttpClient",
-            dependencies: ["HttpClientUtilities"]),
+            dependencies: ["HttpClientUtilities", "URLEncodedForm"]),
 		.target(
 			name: "HttpClientUtilities",
+			dependencies: []),
+		.target(
+			name: "URLEncodedForm",
 			dependencies: []),
         .testTarget(
             name: "HttpClientTests",

@@ -31,12 +31,27 @@ extension OAuth2Client {
 		return url
 	}
 
+	/// https://www.rfc-editor.org/rfc/rfc6749#section-4.1
+	/// 4.1.  Authorization Code Grant
 	public func decodeAuthorizationResponse(redirect: URL) throws -> AuthorizationResponse {
-		try URLEncodedFormDecoder().decode(AuthorizationResponse.self, from: redirect.fragment ?? "")
+		guard let query = redirect.query else {
+			throw URLError(.badURL)
+		}
+		return try URLEncodedFormDecoder().decode(AuthorizationResponse.self, from: query)
 	}
 
+	/// https://www.rfc-editor.org/rfc/rfc6749#section-4.2
+	/// 4.2.  Implicit Grant
 	public func decodeAccessTokenResponse(redirect: URL) throws -> AccessTokenResponse {
-		try URLEncodedFormDecoder().decode(AccessTokenResponse.self, from: redirect.fragment ?? "")
+		guard let fragment = redirect.fragment else {
+			throw URLError(.badURL)
+		}
+		let decoder = URLEncodedFormDecoder()
+
+		guard let token = try? decoder.decode(AccessTokenResponse.self, from: fragment) else {
+			throw try decoder.decode(AuthorizationError.self, from: fragment)
+		}
+		return token
 	}
 
 	public func accessToken(_ code: String) async throws -> AccessTokenResponse {

@@ -12,11 +12,15 @@ public struct AccessTokenType: RawRepresentable, ExpressibleByStringLiteral, Has
 	public let rawValue: String
 
 	public init(rawValue: String) {
-		self.rawValue = rawValue
+		self.rawValue = rawValue.lowercased()
 	}
 
 	public init(stringLiteral value: String) {
-		self.rawValue = value
+		self.rawValue = value.lowercased()
+	}
+
+	public init(from decoder: Decoder) throws {
+		self.rawValue = try decoder.singleValueContainer().decode(String.self).lowercased()
 	}
 }
 

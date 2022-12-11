@@ -8,13 +8,13 @@
 import Foundation
 
 public struct OAuth2Settings {
-	let baseURL: URL
-	let authorizationEndpoint : String
-	let tokenEndpoint: String
-	let redirectURL: URL
-	let clientID: String
-	let clientSecret: String
-	let scope: String
+	public let baseURL: URL
+	public let authorizationEndpoint : String
+	public let tokenEndpoint: String
+	public let redirectURL: URL
+	public let clientID: String
+	public let clientSecret: String
+	public let scope: String
 
 	public init(
 		baseURL: URL,

@@ -9,14 +9,13 @@ import Foundation
 import HttpClientUtilities
 import URLEncodedForm
 
-public protocol OAuth2Client: HttpClientWithBaseUrl where Path == String {
-	var settings: OAuth2Settings { get }
-}
+public protocol OAuth2Client: HttpClientWithBaseUrl where Presenter: OAuth2PresentationLayer, Path == String {}
 
 extension OAuth2Client {
-	public var baseURL: URL { settings.baseURL }
+	public var baseURL: URL { presenter.settings.baseURL }
 
 	public func prepareAuthorizationURL(responseType: ResponseType, state: String? = nil) throws -> URL {
+		let settings = presenter.settings
 		let request = AuthorizationRequest(
 			type: responseType,
 			clientID: settings.clientID,
@@ -55,40 +54,30 @@ extension OAuth2Client {
 	}
 
 	public func accessToken(_ code: String) async throws -> AccessTokenResponse {
-		let request = AccessTokenRequest.authorizationCode(code, clientID: settings.clientID, redirectURI: settings.redirectURL)
+		let settings = presenter.settings
+		let request = AccessTokenRequest.authorizationCode(
+			code,
+			clientID: settings.clientID,
+			redirectURI: settings.redirectURL
+		)
 		return try await post(settings.tokenEndpoint, parameters: request)
 	}
 
 	public func refreshToken(_ refreshToken: String) async throws -> AccessTokenResponse {
+		let settings = presenter.settings
 		let request = AccessTokenRequest.refreshToken(refreshToken, scope: settings.scope)
 		return try await post(settings.tokenEndpoint, parameters: request)
 	}
 
 	func accessTokenWithClientCredentials(username: String, password: String) async throws -> AccessTokenResponse {
+		let settings = presenter.settings
 		let request = AccessTokenRequest.clientCredentials(scope: settings.scope)
-		return try await authorizedPost(
-			settings.tokenEndpoint,
-			parameters: request,
-			username: username,
-			password: password
-		)
+		return try await post(settings.tokenEndpoint, parameters: request)
 	}
 
 	func accessTokenWithPassword(username: String, password: String) async throws -> AccessTokenResponse {
+		let settings = presenter.settings
 		let request = AccessTokenRequest.password(username: username, password: password, scope: settings.scope)
-		return try await authorizedPost(
-			settings.tokenEndpoint,
-			parameters: request,
-			username: username,
-			password: password
-		)
-	}
-
-	func authorizedPost<P: Encodable, T: Decodable>(_ path: Path, parameters: P, username: String, password: String) async throws -> T {
-		var request = try await presenter.prepare(post: makeURL(from: path), parameters: parameters)
-		request.headers.add(.authorization(username: username, password: password))
-		let response = try await transport.perform(request)
-		try await presenter.validate(response: response)
-		return try await presenter.decode(response: response)
+		return try await post(settings.tokenEndpoint, parameters: request)
 	}
 }

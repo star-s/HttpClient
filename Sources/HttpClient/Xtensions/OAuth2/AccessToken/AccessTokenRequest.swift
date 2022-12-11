@@ -59,7 +59,7 @@ extension AccessTokenRequest: Encodable {
 		case .authorizationCode(let code, let clientID, let redirectURI):
 			try container.encode(code, forKey: .code)
 			try container.encode(clientID, forKey: .client_id)
-			try container.encode(redirectURI, forKey: .redirect_uri)
+			try container.encode(redirectURI.absoluteString, forKey: .redirect_uri)
 		case .refreshToken(let token, let scope):
 			try container.encode(token, forKey: .refresh_token)
 			try container.encodeIfPresent(scope, forKey: .scope)

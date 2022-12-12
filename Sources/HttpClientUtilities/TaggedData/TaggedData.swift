@@ -16,7 +16,7 @@ public struct TaggedData {
 
 public extension Data {
 	func tag(by mimeType: String?) -> TaggedData {
-		TaggedData(data: self, mimeType: mimeType ?? "application/octet-stream")
+		TaggedData(data: self, mimeType: mimeType?.lowercased() ?? "application/octet-stream")
 	}
 
 	func tag(by uti: CFString) -> TaggedData {
@@ -36,7 +36,7 @@ extension TaggedData {
 		formDecoder: @escaping @autoclosure () -> URLEncodedFormDecoder = URLEncodedFormDecoder(),
 		textDecoder: @escaping @autoclosure () -> PlaintextDecoder = PlaintextDecoder(encoding: .utf8)
 	) throws -> TypedDataDecoder<T> {
-		switch mimeType.lowercased() {
+		switch mimeType {
 		case "application/json":
 			return TypedDataDecoder(data, decoder: jsonDecoder())
 		case "application/x-www-form-urlencoded":

@@ -29,19 +29,23 @@ public enum DataUrlEncoding: CustomStringConvertible {
 	}
 }
 
-extension Data {
+public extension Data {
+	func urlRepresentation(mimeType uti: CFString = kUTTypeData, encoding: DataUrlEncoding = .base64) -> URL? {
+		tag(by: uti).urlRepresentation(encoding: encoding)
+	}
+}
 
-	public func urlRepresentation(mimeType uti: CFString = kUTTypeData, encoding: DataUrlEncoding = .base64) -> URL? {
-		guard let mimeType = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue() else {
-			return nil
-		}
-		guard let data = encodeToString(encoding) else {
+extension TaggedData {
+	public func urlRepresentation(encoding: DataUrlEncoding = .base64) -> URL? {
+		guard let data = data.encodeToString(encoding) else {
 			return nil
 		}
 		return URL(string: "data:\(mimeType)\(encoding),\(data)")
 	}
+}
 
-	private func encodeToString(_ encodinng: DataUrlEncoding) -> String? {
+private extension Data {
+	func encodeToString(_ encodinng: DataUrlEncoding) -> String? {
 		switch encodinng {
 		case .base64:
 			return base64EncodedString()

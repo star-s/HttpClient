@@ -35,7 +35,7 @@ let package = Package(
             dependencies: ["HttpClientUtilities", "URLEncodedForm"]),
 		.target(
 			name: "HttpClientUtilities",
-			dependencies: []),
+			dependencies: ["URLEncodedForm"]),
 		.target(
 			name: "URLEncodedForm",
 			dependencies: []),

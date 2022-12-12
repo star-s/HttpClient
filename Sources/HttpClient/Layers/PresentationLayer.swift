@@ -65,15 +65,12 @@ public extension PresentationLayer {
 		if T.self is RawResponse.Type {
 			return RawResponse(rawValue: response.data) as! T
 		}
-		let uti = response.response.contentUTI ?? kUTTypeData
-
-		if UTTypeConformsTo(uti, kUTTypeJSON) {
-			return try jsonDecoder.decode(T.self, from: response.data)
-		}
-		if UTTypeConformsTo(uti, kUTTypeText) {
-			return try PlaintextDecoder(encoding: response.response.textEncoding ?? .ascii).decode(T.self, from: response.data)
-		}
-		return try DataOnlyDecoder().decode(T.self, from: response.data)
+		let textDecoder = PlaintextDecoder(encoding: response.response.textEncoding ?? .ascii)
+		return try response
+			.data
+			.tag(by: response.response.mimeType)
+			.decoder(jsonDecoder: jsonDecoder, textDecoder: textDecoder)
+			.decode()
 	}
 
 	var jsonDecoder: JSONDecoder {

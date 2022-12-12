@@ -68,7 +68,7 @@ public extension PresentationLayer {
 		let textDecoder = PlaintextDecoder(encoding: response.response.textEncoding ?? .ascii)
 		return try response
 			.data
-			.tag(by: response.response.mimeType)
+			.tag(as: response.response.mimeType)
 			.decoder(jsonDecoder: jsonDecoder, textDecoder: textDecoder)
 			.decode()
 	}

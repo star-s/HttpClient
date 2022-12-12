@@ -14,7 +14,7 @@ public struct DataUrlBuilder {
 	let encoding: DataUrlEncoding
 
 	public init(_ uti: CFString, data: Data, encoding: DataUrlEncoding = .base64) {
-		self.data = data.tag(by: uti)
+		self.data = data.tag(as: uti)
 		self.encoding = encoding
 	}
 

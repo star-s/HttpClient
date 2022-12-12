@@ -15,12 +15,12 @@ public struct TaggedData {
 }
 
 public extension Data {
-	func tag(by mimeType: String? = nil) -> TaggedData {
+	func tag(as mimeType: String? = nil) -> TaggedData {
 		TaggedData(data: self, mimeType: mimeType?.lowercased() ?? "application/octet-stream")
 	}
 
-	func tag(by uti: CFString) -> TaggedData {
-		tag(by: (UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue() as NSString?) as String?)
+	func tag(as uti: CFString) -> TaggedData {
+		tag(as: (UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue() as NSString?) as String?)
 	}
 }
 

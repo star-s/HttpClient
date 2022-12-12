@@ -31,7 +31,7 @@ public enum DataUrlEncoding: CustomStringConvertible {
 
 public extension Data {
 	func urlRepresentation(mimeType uti: CFString = kUTTypeData, encoding: DataUrlEncoding = .base64) -> URL? {
-		tag(by: uti).urlRepresentation(encoding: encoding)
+		tag(as: uti).urlRepresentation(encoding: encoding)
 	}
 }
 

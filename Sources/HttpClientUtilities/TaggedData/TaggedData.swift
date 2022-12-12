@@ -15,7 +15,7 @@ public struct TaggedData {
 }
 
 public extension Data {
-	func tag(by mimeType: String?) -> TaggedData {
+	func tag(by mimeType: String? = nil) -> TaggedData {
 		TaggedData(data: self, mimeType: mimeType?.lowercased() ?? "application/octet-stream")
 	}
 

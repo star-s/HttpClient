@@ -12,14 +12,3 @@ extension HTTPURLResponse: LocalizedError {
 		Self.localizedString(forStatusCode: statusCode)
 	}
 }
-
-extension URLResponse {
-	public func checkStatusCode() throws {
-		guard let httpResponse = self as? HTTPURLResponse else {
-			return
-		}
-		guard httpResponse.statusCode == 200 else {
-			throw httpResponse
-		}
-	}
-}

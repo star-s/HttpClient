@@ -31,4 +31,18 @@ public extension URLRequest {
 		}
 		return request
 	}
+
+	func with(body taggedData: TaggedData) -> URLRequest {
+		var request = self
+		request.httpBody = taggedData.data
+		guard let mimeType = taggedData.mimeType else {
+			return request
+		}
+		if let charset = taggedData.textEncoding?.IANACharSetName {
+			request.headers.update(.contentType(mimeType + "; charset=\(charset)"))
+		} else {
+			request.headers.update(.contentType(mimeType))
+		}
+		return request
+	}
 }

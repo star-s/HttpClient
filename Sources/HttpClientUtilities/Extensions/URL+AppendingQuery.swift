@@ -8,9 +8,9 @@
 import Foundation
 
 extension URL {
-    public func appendingQuery(_ query: String, percentEncoded: Bool = true) -> URL? {
+    public func appendingQuery(_ query: String, percentEncoded: Bool = true) throws -> URL {
         guard var components = URLComponents(url: self, resolvingAgainstBaseURL: true) else {
-            return nil
+			throw URLError(.badURL)
         }
         if percentEncoded {
             components.percentEncodedQuery = query
@@ -18,7 +18,7 @@ extension URL {
             components.query = query
         }
         guard let result = components.url else {
-            return nil
+			throw URLError(.badURL)
         }
         return result
     }

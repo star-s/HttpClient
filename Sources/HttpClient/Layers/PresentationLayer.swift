@@ -61,10 +61,7 @@ public extension PresentationLayer {
 	func validate(response: (data: Data, response: URLResponse)) async throws {}
 	
 	func decode<T: Decodable>(response: (data: Data, response: URLResponse)) async throws -> T {
-		if T.self is RawResponse.Type {
-			return RawResponse(rawValue: response.data) as! T
-		}
-		return try response
+		try response
 			.data
 			.tagged(with: response.response.tags)
 			.decoder(fallback: .decodeAsText, jsonDecoder: jsonDecoder)

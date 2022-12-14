@@ -24,10 +24,7 @@ extension OAuth2Client {
 			redirectURL: settings.redirectURL
 		)
 		let query = try URLEncodedFormEncoder(arrayEncoding: .noBrackets).encode(request) as String
-		guard let url = try makeURL(from: settings.authorizationEndpoint).appendingQuery(query) else {
-			throw URLError(.badURL)
-		}
-		return url
+		return try makeURL(from: settings.authorizationEndpoint).appendingQuery(query)
 	}
 
 	/// https://www.rfc-editor.org/rfc/rfc6749#section-4.1

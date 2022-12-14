@@ -8,7 +8,7 @@
 import Foundation
 import CoreServices
 
-public protocol PresentationLayerWithDecodingPath: PresentationLayer {
+public protocol PresentationLayerWithDecodingPath: PresentationLayerWithCustomizations {
 	func decode<T: Decodable>(response: (data: Data, response: URLResponse), decodingPath: [DecodingKey]?) async throws -> T
 }
 

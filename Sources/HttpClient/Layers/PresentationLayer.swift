@@ -18,8 +18,6 @@ public protocol PresentationLayer {
     
 	func validate(response: (data: Data, response: URLResponse)) async throws
 	func decode<T: Decodable>(response: (data: Data, response: URLResponse)) async throws -> T
-
-	var jsonDecoder: JSONDecoder { get }
 }
 
 public extension PresentationLayer {
@@ -64,11 +62,7 @@ public extension PresentationLayer {
 		try response
 			.data
 			.tagged(with: response.response.tags)
-			.decoder(fallback: .decodeAsText, jsonDecoder: jsonDecoder)
+			.decoder(fallback: .decodeAsText)
 			.decode()
-	}
-
-	var jsonDecoder: JSONDecoder {
-		JSONDecoder()
 	}
 }

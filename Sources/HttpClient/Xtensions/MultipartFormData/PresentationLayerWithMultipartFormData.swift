@@ -27,12 +27,8 @@ public extension PresentationLayerWithMultipartFormData {
 public extension PresentationLayerWithMultipartFormData where Self: PresentationLayerWithCustomizations {
 	
 	func prepare(post url: URL, multipartFormData: @escaping (FormDataBuilder) -> Void) async throws -> URLRequest {
-		try await withCheckedThrowingContinuation { [headers] continuation in
-			let formData = MultipartFormData()
-			multipartFormData(formData)
-			continuation.resume(with: Result {
-				try URLRequest(url: url).with(headers: headers).with(method: .post).with(body: formData)
-			})
-		}
+		let formData = MultipartFormData()
+		multipartFormData(formData)
+		return try await URLRequest(url: url).with(headers: headers()).with(method: .post).with(body: formData)
 	}
 }

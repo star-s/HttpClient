@@ -33,11 +33,11 @@ public extension URLResponse {
 		return tags
 	}
 
-	func checkStatusCode<R: RangeExpression>(valid range: R) throws where R.Bound == Int {
+	func checkStatusCode<R: RangeExpression>(validRange: R) throws where R.Bound == Int {
 		guard let httpResponse = self as? HTTPURLResponse else {
 			return
 		}
-		guard range.contains(httpResponse.statusCode) else {
+		guard validRange.contains(httpResponse.statusCode) else {
 			throw httpResponse
 		}
 	}

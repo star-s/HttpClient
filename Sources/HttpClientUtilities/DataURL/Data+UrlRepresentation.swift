@@ -15,18 +15,9 @@ extension URL {
 	}
 }
 
-public enum DataUrlEncoding: CustomStringConvertible {
+public enum DataUrlEncoding {
 	case base64
 	case charset(String.Encoding)
-
-	public var description: String {
-		switch self {
-		case .base64:
-			return ";base64"
-		case .charset(let encoding):
-			return encoding.IANACharSetName.map { ";charset=\($0)" } ?? ""
-		}
-	}
 }
 
 public extension Data {
@@ -35,22 +26,13 @@ public extension Data {
 	}
 }
 
-extension TaggedData {
-	public func urlRepresentation(encoding: DataUrlEncoding = .base64) -> URL? {
-		guard let data = data.encodeToString(encoding) else {
-			return nil
-		}
-		return URL(string: "data:\(mimeType)\(encoding),\(data)")
-	}
-}
-
-private extension Data {
-	func encodeToString(_ encodinng: DataUrlEncoding) -> String? {
-		switch encodinng {
+extension DataUrlEncoding: CustomStringConvertible {
+	public var description: String {
+		switch self {
 		case .base64:
-			return base64EncodedString()
+			return ";base64"
 		case .charset(let encoding):
-			return String(data: self, encoding: encoding)?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+			return encoding.IANACharSetName.map { ";charset=\($0)" } ?? ""
 		}
 	}
 }

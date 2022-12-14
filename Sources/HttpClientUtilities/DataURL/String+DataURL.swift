@@ -11,13 +11,13 @@ import CoreServices
 extension String {
 	public func plainText(encoding: Encoding = .utf8) -> DataUrlBuilder? {
 		data(using: encoding).map {
-			DataUrlBuilder(kUTTypePlainText, data: $0, encoding: .charset(encoding))
+			$0.tag(as: kUTTypePlainText).dataUrlBuilder(encoding: .charset(encoding))
 		}
 	}
 
 	public func json() -> DataUrlBuilder? {
 		data(using: .utf8).map {
-			DataUrlBuilder(kUTTypeJSON, data: $0, encoding: .base64)
+			$0.tag(as: kUTTypeJSON).dataUrlBuilder(encoding: .base64)
 		}
 	}
 }

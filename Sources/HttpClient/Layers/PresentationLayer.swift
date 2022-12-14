@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import CoreServices
 @_exported import HttpClientUtilities
 
 public protocol PresentationLayer {
@@ -65,11 +64,10 @@ public extension PresentationLayer {
 		if T.self is RawResponse.Type {
 			return RawResponse(rawValue: response.data) as! T
 		}
-		let textDecoder = PlaintextDecoder(encoding: response.response.textEncoding ?? .ascii)
 		return try response
 			.data
-			.tag(as: response.response.mimeType)
-			.decoder(jsonDecoder: jsonDecoder, textDecoder: textDecoder)
+			.tagged(with: response.response.tags)
+			.decoder(fallback: .decodeAsText, jsonDecoder: jsonDecoder)
 			.decode()
 	}
 

@@ -28,10 +28,6 @@ public struct PlaintextDecoder {
 	}
 }
 
-import Combine
-
-extension PlaintextDecoder: TopLevelDecoder {}
-
 // MARK: - Private
 
 private final class _PlaintextDecoder: Decoder {

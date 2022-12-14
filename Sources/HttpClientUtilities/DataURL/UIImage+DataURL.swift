@@ -13,13 +13,13 @@ import UIKit
 extension UIImage {
 	public func png() -> DataUrlBuilder? {
 		pngData().map {
-			DataUrlBuilder(kUTTypePNG, data: $0, encoding: .base64)
+			$0.tag(as: kUTTypePNG).dataUrlBuilder(encoding: .base64)
 		}
 	}
 
 	public func jpeg(quality: CGFloat = 1.0) -> DataUrlBuilder? {
 		jpegData(compressionQuality: quality).map {
-			DataUrlBuilder(kUTTypeJPEG, data: $0, encoding: .base64)
+			$0.tag(as: kUTTypeJPEG).dataUrlBuilder(encoding: .base64)
 		}
 	}
 }

@@ -14,13 +14,13 @@ extension NSImage {
 	
 	public func png() -> DataUrlBuilder? {
 		bitmapRep?.representation(using: .png, properties: [:]).map {
-			DataUrlBuilder(kUTTypePNG, data: $0, encoding: .base64)
+			$0.tag(as: kUTTypePNG).dataUrlBuilder(encoding: .base64)
 		}
 	}
 
 	public func jpeg(quality: Float = 1.0) -> DataUrlBuilder? {
 		bitmapRep?.representation(using: .jpeg, properties: [.compressionFactor: quality]).map {
-			DataUrlBuilder(kUTTypeJPEG, data: $0, encoding: .base64)
+			$0.tag(as: kUTTypeJPEG).dataUrlBuilder(encoding: .base64)
 		}
 	}
 

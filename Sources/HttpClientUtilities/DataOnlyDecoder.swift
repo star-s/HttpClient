@@ -20,7 +20,3 @@ public struct DataOnlyDecoder {
 		}
 	}
 }
-
-import Combine
-
-extension DataOnlyDecoder: TopLevelDecoder {}

@@ -81,6 +81,10 @@ final class HttpClientTests: XCTestCase {
 		
 		struct CustomHeadersPresenter: PresentationLayerWithCustomizations {
 			var headers: HTTPHeaders
+
+			func headers() async throws -> HTTPHeaders {
+				self.headers
+			}
 		}
 
 		let requestWithCustomHeader = try await CustomHeadersPresenter(headers: HTTPHeaders()).prepare(get: "http://somewere.org/", parameters: Parameters.void)

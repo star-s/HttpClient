@@ -19,24 +19,10 @@ public struct TaggedData {
 }
 
 public extension TaggedData {
-	var mimeType: String? {
-		for tag in tags {
-			if case .mimeType(let mimeType) = tag {
-				return mimeType.lowercased()
-			}
-		}
-		return nil
-	}
+	var mimeType: String? { tags.mimeType }
 
 	// charset
-	var textEncoding: String.Encoding? {
-		for tag in tags {
-			if case .textEncoding(let encoding) = tag {
-				return encoding
-			}
-		}
-		return nil
-	}
+	var textEncoding: String.Encoding? { tags.textEncoding }
 
 	func tagged(_ tag: TaggedData.Tag) -> TaggedData {
 		var tags = self.tags
@@ -68,5 +54,25 @@ public extension Data {
 	func tag(as uti: CFString) -> TaggedData {
 		let mimeType = (UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue() as NSString?) as String?
 		return tagged(.mimeType(mimeType ?? "application/octet-stream"))
+	}
+}
+
+extension Set where Element == TaggedData.Tag {
+	var mimeType: String? {
+		for tag in self {
+			if case .mimeType(let mimeType) = tag {
+				return mimeType.lowercased()
+			}
+		}
+		return nil
+	}
+
+	var textEncoding: String.Encoding? {
+		for tag in self {
+			if case .textEncoding(let encoding) = tag {
+				return encoding
+			}
+		}
+		return nil
 	}
 }

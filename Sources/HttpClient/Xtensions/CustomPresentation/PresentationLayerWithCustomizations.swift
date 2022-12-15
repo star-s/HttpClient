@@ -36,7 +36,7 @@ public extension PresentationLayerWithCustomizations {
 	}
 
 	func encodeBody<T: Encodable>(parameters: T) throws -> TaggedData {
-		try jsonEncoder.encode(parameters).tagged(.mimeType("application/json"))
+		try .jsonEncoded(parameters, jsonEncoder: jsonEncoder)
 	}
 
 	// MARK: - PresentationLayer

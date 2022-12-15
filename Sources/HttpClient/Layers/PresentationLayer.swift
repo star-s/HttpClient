@@ -26,34 +26,34 @@ public extension PresentationLayer {
 		try URLRequest(url: url)
 			.with(headers: .default)
 			.with(method: .post)
-			.with(body: parameters, coder: JSONEncoder(), contentType: "application/json")
+			.with(body: .jsonEncoded(parameters))
 	}
 	
 	func prepare<T: Encodable>(get url: URL, parameters: T) async throws -> URLRequest {
 		try URLRequest(url: url)
 			.with(headers: .default)
-			.with(query: parameters, coder: URLEncodedFormEncoder())
+			.with(query: URLEncodedFormEncoder().encode(parameters))
 	}
 	
 	func prepare<T: Encodable>(put url: URL, parameters: T) async throws -> URLRequest {
 		try URLRequest(url: url)
 			.with(headers: .default)
 			.with(method: .put)
-			.with(body: parameters, coder: JSONEncoder(), contentType: "application/json")
+			.with(body: .jsonEncoded(parameters))
 	}
 	
 	func prepare<T: Encodable>(patch url: URL, parameters: T) async throws -> URLRequest {
 		try URLRequest(url: url)
 			.with(headers: .default)
 			.with(method: .patch)
-			.with(body: parameters, coder: JSONEncoder(), contentType: "application/json")
+			.with(body: .jsonEncoded(parameters))
 	}
 	
 	func prepare<T: Encodable>(delete url: URL, parameters: T) async throws -> URLRequest {
 		try URLRequest(url: url)
 			.with(headers: .default)
 			.with(method: .delete)
-			.with(query: parameters, coder: URLEncodedFormEncoder())
+			.with(query: URLEncodedFormEncoder().encode(parameters))
 	}
 	
 	func validate(response: (data: Data, response: URLResponse)) async throws {}

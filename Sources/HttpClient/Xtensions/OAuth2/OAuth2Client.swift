@@ -23,7 +23,7 @@ extension OAuth2Client {
 			state: state,
 			redirectURL: settings.redirectURL
 		)
-		let query = try URLEncodedFormEncoder(arrayEncoding: .noBrackets).encode(request) as String
+		let query = try URLQueryEncoder(arrayEncoding: .noBrackets).encode(request) as String
 		return try makeURL(from: settings.authorizationEndpoint).appendingQuery(query)
 	}
 

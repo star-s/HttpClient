@@ -41,7 +41,7 @@ import Foundation
 /// while older encodings may expect spaces to be replaced with `+`.
 ///
 /// This type is largely based on Vapor's [`url-encoded-form`](https://github.com/vapor/url-encoded-form) project.
-public final class URLEncodedFormEncoder {
+public final class URLQueryEncoder {
     /// Encoding to use for `Array` values.
     public enum ArrayEncoding {
         /// An empty set of square brackets ("[]") are appended to the key for every value. This is the default encoding.
@@ -407,15 +407,15 @@ final class _URLEncodedFormEncoder {
 
     let context: URLEncodedFormContext
 
-    private let boolEncoding: URLEncodedFormEncoder.BoolEncoding
-    private let dataEncoding: URLEncodedFormEncoder.DataEncoding
-    private let dateEncoding: URLEncodedFormEncoder.DateEncoding
+    private let boolEncoding: URLQueryEncoder.BoolEncoding
+    private let dataEncoding: URLQueryEncoder.DataEncoding
+    private let dateEncoding: URLQueryEncoder.DateEncoding
 
     init(context: URLEncodedFormContext,
          codingPath: [CodingKey] = [],
-         boolEncoding: URLEncodedFormEncoder.BoolEncoding,
-         dataEncoding: URLEncodedFormEncoder.DataEncoding,
-         dateEncoding: URLEncodedFormEncoder.DateEncoding) {
+         boolEncoding: URLQueryEncoder.BoolEncoding,
+         dataEncoding: URLQueryEncoder.DataEncoding,
+         dateEncoding: URLQueryEncoder.DateEncoding) {
         self.context = context
         self.codingPath = codingPath
         self.boolEncoding = boolEncoding
@@ -575,15 +575,15 @@ extension _URLEncodedFormEncoder {
         var codingPath: [CodingKey]
 
         private let context: URLEncodedFormContext
-        private let boolEncoding: URLEncodedFormEncoder.BoolEncoding
-        private let dataEncoding: URLEncodedFormEncoder.DataEncoding
-        private let dateEncoding: URLEncodedFormEncoder.DateEncoding
+        private let boolEncoding: URLQueryEncoder.BoolEncoding
+        private let dataEncoding: URLQueryEncoder.DataEncoding
+        private let dateEncoding: URLQueryEncoder.DateEncoding
 
         init(context: URLEncodedFormContext,
              codingPath: [CodingKey],
-             boolEncoding: URLEncodedFormEncoder.BoolEncoding,
-             dataEncoding: URLEncodedFormEncoder.DataEncoding,
-             dateEncoding: URLEncodedFormEncoder.DateEncoding) {
+             boolEncoding: URLQueryEncoder.BoolEncoding,
+             dataEncoding: URLQueryEncoder.DataEncoding,
+             dateEncoding: URLQueryEncoder.DateEncoding) {
             self.context = context
             self.codingPath = codingPath
             self.boolEncoding = boolEncoding
@@ -663,15 +663,15 @@ extension _URLEncodedFormEncoder {
         private var canEncodeNewValue = true
 
         private let context: URLEncodedFormContext
-        private let boolEncoding: URLEncodedFormEncoder.BoolEncoding
-        private let dataEncoding: URLEncodedFormEncoder.DataEncoding
-        private let dateEncoding: URLEncodedFormEncoder.DateEncoding
+        private let boolEncoding: URLQueryEncoder.BoolEncoding
+        private let dataEncoding: URLQueryEncoder.DataEncoding
+        private let dateEncoding: URLQueryEncoder.DateEncoding
 
         init(context: URLEncodedFormContext,
              codingPath: [CodingKey],
-             boolEncoding: URLEncodedFormEncoder.BoolEncoding,
-             dataEncoding: URLEncodedFormEncoder.DataEncoding,
-             dateEncoding: URLEncodedFormEncoder.DateEncoding) {
+             boolEncoding: URLQueryEncoder.BoolEncoding,
+             dataEncoding: URLQueryEncoder.DataEncoding,
+             dateEncoding: URLQueryEncoder.DateEncoding) {
             self.context = context
             self.codingPath = codingPath
             self.boolEncoding = boolEncoding
@@ -806,15 +806,15 @@ extension _URLEncodedFormEncoder {
         }
 
         private let context: URLEncodedFormContext
-        private let boolEncoding: URLEncodedFormEncoder.BoolEncoding
-        private let dataEncoding: URLEncodedFormEncoder.DataEncoding
-        private let dateEncoding: URLEncodedFormEncoder.DateEncoding
+        private let boolEncoding: URLQueryEncoder.BoolEncoding
+        private let dataEncoding: URLQueryEncoder.DataEncoding
+        private let dateEncoding: URLQueryEncoder.DateEncoding
 
         init(context: URLEncodedFormContext,
              codingPath: [CodingKey],
-             boolEncoding: URLEncodedFormEncoder.BoolEncoding,
-             dataEncoding: URLEncodedFormEncoder.DataEncoding,
-             dateEncoding: URLEncodedFormEncoder.DateEncoding) {
+             boolEncoding: URLQueryEncoder.BoolEncoding,
+             dataEncoding: URLQueryEncoder.DataEncoding,
+             dateEncoding: URLQueryEncoder.DateEncoding) {
             self.context = context
             self.codingPath = codingPath
             self.boolEncoding = boolEncoding
@@ -880,15 +880,15 @@ extension _URLEncodedFormEncoder.UnkeyedContainer: UnkeyedEncodingContainer {
 
 final class URLEncodedFormSerializer {
     private let alphabetizeKeyValuePairs: Bool
-    private let arrayEncoding: URLEncodedFormEncoder.ArrayEncoding
-    private let keyEncoding: URLEncodedFormEncoder.KeyEncoding
-    private let spaceEncoding: URLEncodedFormEncoder.SpaceEncoding
+    private let arrayEncoding: URLQueryEncoder.ArrayEncoding
+    private let keyEncoding: URLQueryEncoder.KeyEncoding
+    private let spaceEncoding: URLQueryEncoder.SpaceEncoding
     private let allowedCharacters: CharacterSet
 
     init(alphabetizeKeyValuePairs: Bool,
-         arrayEncoding: URLEncodedFormEncoder.ArrayEncoding,
-         keyEncoding: URLEncodedFormEncoder.KeyEncoding,
-         spaceEncoding: URLEncodedFormEncoder.SpaceEncoding,
+         arrayEncoding: URLQueryEncoder.ArrayEncoding,
+         keyEncoding: URLQueryEncoder.KeyEncoding,
+         spaceEncoding: URLQueryEncoder.SpaceEncoding,
          allowedCharacters: CharacterSet) {
         self.alphabetizeKeyValuePairs = alphabetizeKeyValuePairs
         self.arrayEncoding = arrayEncoding

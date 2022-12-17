@@ -7,8 +7,11 @@
 
 import Foundation
 import Combine
+import URLEncodedForm
 
-extension URLEncodedFormEncoder: TopLevelEncoder {
+extension URLEncodedFormEncoder: TopLevelEncoder {}
+
+extension URLQueryEncoder: TopLevelEncoder {
     public typealias Output = String
 
     public func encode<T: Encodable>(_ value: T) throws -> String {

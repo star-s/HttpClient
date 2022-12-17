@@ -32,7 +32,7 @@ public extension PresentationLayerWithCustomizations {
 	}
 
 	func encodeQuery<T: Encodable>(parameters: T) throws -> String? {
-		try URLEncodedFormEncoder().encode(parameters)
+		try URLQueryEncoder().encode(parameters)
 	}
 
 	func encodeBody<T: Encodable>(parameters: T) throws -> TaggedData {

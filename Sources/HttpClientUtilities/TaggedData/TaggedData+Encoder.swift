@@ -12,7 +12,7 @@ public extension TaggedData {
 	static func formURLEncoded<T: Encodable>(
 		_ value: T,
 		tags: Set<Tag> = [],
-		formEncoder: @escaping @autoclosure () -> URLEncodedForm.URLEncodedFormEncoder = URLEncodedForm.URLEncodedFormEncoder()
+		formEncoder: @escaping @autoclosure () -> URLEncodedFormEncoder = URLEncodedFormEncoder()
 	) throws -> TaggedData {
 		try formEncoder().encode(value).tagged(with: tags.union([.mimeType("application/x-www-form-urlencoded")]))
 	}

@@ -32,7 +32,7 @@ public extension PresentationLayer {
 	func prepare<T: Encodable>(get url: URL, parameters: T) async throws -> URLRequest {
 		try URLRequest(url: url)
 			.with(headers: .default)
-			.with(query: URLEncodedFormEncoder().encode(parameters))
+			.with(query: URLQueryEncoder().encode(parameters))
 	}
 	
 	func prepare<T: Encodable>(put url: URL, parameters: T) async throws -> URLRequest {
@@ -53,7 +53,7 @@ public extension PresentationLayer {
 		try URLRequest(url: url)
 			.with(headers: .default)
 			.with(method: .delete)
-			.with(query: URLEncodedFormEncoder().encode(parameters))
+			.with(query: URLQueryEncoder().encode(parameters))
 	}
 	
 	func validate(response: (data: Data, response: URLResponse)) async throws {}

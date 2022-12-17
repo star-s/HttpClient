@@ -76,3 +76,15 @@ extension Set where Element == TaggedData.Tag {
 		return nil
 	}
 }
+
+import URLEncodedForm
+
+extension TaggedData: LosslessDataConvertible {
+	public static func convertFromData(_ data: Data) -> TaggedData {
+		TaggedData(data: data, tags: [])
+	}
+
+	public func convertToData() -> Data {
+		data
+	}
+}

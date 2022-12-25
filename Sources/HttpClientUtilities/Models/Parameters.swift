@@ -10,5 +10,8 @@ import Foundation
 public enum Parameters: Encodable {
 	case void
 
-	public func encode(to encoder: Encoder) throws {}
+	public func encode(to encoder: Encoder) throws {
+		struct Void: Encodable {}
+		try Void().encode(to: encoder)
+	}
 }

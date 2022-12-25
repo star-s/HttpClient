@@ -9,4 +9,6 @@ import Foundation
 
 public enum Parameters: Encodable {
 	case void
+
+	public func encode(to encoder: Encoder) throws {}
 }

@@ -7,10 +7,18 @@
 
 import Foundation
 
-public struct RawResponse: RawRepresentable, Decodable {
-	public let rawValue: Data
+public struct RawResponse {
+	public let data: Data
+	public let response: URLResponse
 
-	public init(rawValue: Data) {
-		self.rawValue = rawValue
+	public init(data: Data, response: URLResponse) {
+		self.data = data
+		self.response = response
+	}
+}
+
+extension RawResponse: Decodable {
+	public init(from decoder: Decoder) throws {
+		fatalError("Must not be decoded!")
 	}
 }

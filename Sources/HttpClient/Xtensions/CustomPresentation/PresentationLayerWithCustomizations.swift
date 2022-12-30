@@ -36,7 +36,10 @@ public extension PresentationLayerWithCustomizations {
 	}
 
 	func encodeBody<T: Encodable>(parameters: T) throws -> TaggedData {
-		try .jsonEncoded(parameters, jsonEncoder: jsonEncoder)
+		if let data = parameters as? TaggedData {
+			return data
+		}
+		return try .jsonEncoded(parameters, jsonEncoder: jsonEncoder)
 	}
 
 	// MARK: - PresentationLayer
@@ -76,7 +79,10 @@ public extension PresentationLayerWithCustomizations {
 	}
 
 	func decode<T: Decodable>(response: (data: Data, response: URLResponse)) async throws -> T {
-		try response
+		if T.self is RawResponse.Type {
+			return RawResponse(data: response.data, response: response.response) as! T
+		}
+		return try response
 			.data
 			.tagged(with: response.response.tags)
 			.decoder(fallback: .decodeAsText, jsonDecoder: jsonDecoder)

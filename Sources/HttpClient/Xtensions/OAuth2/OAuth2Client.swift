@@ -2,79 +2,63 @@
 //  File.swift
 //  
 //
-//  Created by Sergey Starukhin on 10.12.2022.
+//  Created by Sergey Starukhin on 31.12.2022.
 //
 
 import Foundation
-import HttpClientUtilities
-import URLEncodedForm
 
-public protocol OAuth2Client: HttpClientWithBaseUrl where Presenter: OAuth2PresentationLayer, Path == String {}
+public protocol OAuth2Client {
 
-extension OAuth2Client {
-	public var baseURL: URL { presenter.settings.baseURL }
+	var callbackURL: URL { get }
+	
+	func prepareAuthorizationURL(responseType: ResponseType, state: String?) throws -> URL
 
-	public func prepareAuthorizationURL(responseType: ResponseType, state: String? = nil) throws -> URL {
-		let settings = presenter.settings
-		let request = AuthorizationRequest(
-			type: responseType,
-			clientID: settings.clientID,
-			scope: settings.scope,
-			state: state,
-			redirectURL: settings.redirectURL
-		)
-		let query = try URLQueryEncoder(arrayEncoding: .noBrackets).encode(request) as String
-		return try makeURL(from: settings.authorizationEndpoint).appendingQuery(query)
-	}
+	func decodeAuthorizationResponse(redirect: URL) throws -> AuthorizationResponse
+	func decodeAccessTokenResponse(redirect: URL) throws -> AccessTokenResponse
 
-	/// https://www.rfc-editor.org/rfc/rfc6749#section-4.1
-	/// 4.1.  Authorization Code Grant
-	public func decodeAuthorizationResponse(redirect: URL) throws -> AuthorizationResponse {
-		guard let query = redirect.query else {
-			throw URLError(.badURL)
+	func accessToken(_ code: String) async throws -> AccessTokenResponse
+	func refreshToken(_ refreshToken: String) async throws -> AccessTokenResponse
+}
+
+#if os(macOS) || os(iOS)
+import AuthenticationServices
+
+public extension OAuth2Client {
+	@MainActor
+	func startWebAuthenticationSession(
+		responseType: ResponseType,
+		presentationContextProvider: ASWebAuthenticationPresentationContextProviding,
+		ephemeralWebBrowser: Bool = true
+	) async throws -> AccessTokenResponse {
+		let url = try prepareAuthorizationURL(responseType: responseType, state: nil)
+		return try await withCheckedThrowingContinuation { continuation in
+			let session = ASWebAuthenticationSession(url: url, callbackURLScheme: self.callbackURL.scheme) { url, error in
+				do {
+					if let error = error {
+						throw error
+					}
+					guard let url = url else {
+						throw URLError(.badURL)
+					}
+					Task {
+						switch responseType {
+						case .code:
+							let response = try self.decodeAuthorizationResponse(redirect: url)
+							let token = try await self.accessToken(response.code)
+							continuation.resume(returning: token)
+						case .token:
+							let token = try self.decodeAccessTokenResponse(redirect: url)
+							continuation.resume(returning: token)
+						}
+					}
+				} catch {
+					continuation.resume(throwing: error)
+				}
+			}
+			session.presentationContextProvider = presentationContextProvider
+			session.prefersEphemeralWebBrowserSession = ephemeralWebBrowser
+			session.start()
 		}
-		return try URLEncodedFormDecoder().decode(AuthorizationResponse.self, from: query)
-	}
-
-	/// https://www.rfc-editor.org/rfc/rfc6749#section-4.2
-	/// 4.2.  Implicit Grant
-	public func decodeAccessTokenResponse(redirect: URL) throws -> AccessTokenResponse {
-		guard let fragment = redirect.fragment else {
-			throw URLError(.badURL)
-		}
-		let decoder = URLEncodedFormDecoder()
-
-		guard let token = try? decoder.decode(AccessTokenResponse.self, from: fragment) else {
-			throw try decoder.decode(AuthorizationError.self, from: fragment)
-		}
-		return token
-	}
-
-	public func accessToken(_ code: String) async throws -> AccessTokenResponse {
-		let settings = presenter.settings
-		let request = AccessTokenRequest.authorizationCode(
-			code,
-			clientID: settings.clientID,
-			redirectURI: settings.redirectURL
-		)
-		return try await post(settings.tokenEndpoint, parameters: request)
-	}
-
-	public func refreshToken(_ refreshToken: String) async throws -> AccessTokenResponse {
-		let settings = presenter.settings
-		let request = AccessTokenRequest.refreshToken(refreshToken, scope: settings.scope)
-		return try await post(settings.tokenEndpoint, parameters: request)
-	}
-
-	func accessTokenWithClientCredentials(username: String, password: String) async throws -> AccessTokenResponse {
-		let settings = presenter.settings
-		let request = AccessTokenRequest.clientCredentials(scope: settings.scope)
-		return try await post(settings.tokenEndpoint, parameters: request)
-	}
-
-	func accessTokenWithPassword(username: String, password: String) async throws -> AccessTokenResponse {
-		let settings = presenter.settings
-		let request = AccessTokenRequest.password(username: username, password: password, scope: settings.scope)
-		return try await post(settings.tokenEndpoint, parameters: request)
 	}
 }
+#endif

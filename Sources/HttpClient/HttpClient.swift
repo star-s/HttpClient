@@ -85,7 +85,7 @@ public extension HttpClient {
 
 // MARK: - Void response
 
-public extension HttpClient {
+public extension HttpClient where Self: ApplicationLayerWithoutReturnValue {
 
 	func post<P: Encodable>(_ path: Path, parameters: P) async throws {
 		let request = try await presenter.prepare(post: makeURL(from: path), parameters: parameters)

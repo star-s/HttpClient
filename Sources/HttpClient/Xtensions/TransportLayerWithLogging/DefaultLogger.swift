@@ -7,28 +7,51 @@
 
 import Foundation
 
-public protocol TransportLogger {
-	func log(request: URLRequest)
-	func log(result: Result<(data: Data, response: URLResponse), Error>, of request: URLRequest, taskInterval: DateInterval)
-}
-
 /// For debug purposes only !!!
 /// Based on code from https://github.com/konkab/AlamofireNetworkActivityLogger/blob/master/Source/NetworkActivityLogger.swift
-extension TransportLogger {
+public final class DefaultLogger: TransportLogger {
 
-	public func log(result: Result<(data: Data, response: URLResponse), Error>, of request: URLRequest, taskInterval: DateInterval) {
-#if DEBUG
+	private let sessionConfiguration: URLSessionConfiguration?
+	private var request: URLRequest?
+	private var startDate: Date?
+
+	public init(sessionConfiguration: URLSessionConfiguration? = nil) {
+		self.sessionConfiguration = sessionConfiguration
+	}
+
+	public func log(request: URLRequest) {
+		startDate = Date()
+
+		guard let httpMethod = request.httpMethod,
+			let requestURL = request.url
+			else {
+				return
+		}
+		let cURL = request.cURLDescription(sessionConfiguration: sessionConfiguration)
+
+		self.logDivider()
+
+		print("\(httpMethod) '\(requestURL.absoluteString)':")
+
+		print("cURL:\n\(cURL)\n")
+
+		self.request = request
+	}
+
+	public func log(result: Result<(data: Data, response: URLResponse), Error>) {
+		guard let taskInterval = startDate.map({ DateInterval(start: $0, end: Date()) }), let request = request else {
+			return
+		}
 		switch result {
 		case .success(let response):
 			log(response: response, of: request, taskInterval: taskInterval)
 		case .failure(let error):
 			log(error: error, of: request, taskInterval: taskInterval)
 		}
-#endif
 	}
 
 	// MARK: - Internal stuff
-#if DEBUG
+
 	private func log(response: (data: Data, response: URLResponse), of request: URLRequest, taskInterval: DateInterval) {
 		guard let requestURL = response.response.url else {
 			return
@@ -85,28 +108,5 @@ extension TransportLogger {
 			print("  \(key): \(value)")
 		}
 		print("]")
-	}
-#endif
-}
-
-/// For debug purposes only !!!
-/// Based on code from https://github.com/konkab/AlamofireNetworkActivityLogger/blob/master/Source/NetworkActivityLogger.swift
-extension TransportLogger where Self: URLSessionTransportLayer {
-
-	public func log(request: URLRequest) {
-#if DEBUG
-		guard let httpMethod = request.httpMethod,
-			let requestURL = request.url
-			else {
-				return
-		}
-		let cURL = request.cURLDescription(sessionConfiguration: urlSession.configuration)
-
-		self.logDivider()
-
-		print("\(httpMethod) '\(requestURL.absoluteString)':")
-
-		print("cURL:\n\(cURL)\n")
-#endif
 	}
 }

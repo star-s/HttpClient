@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Combine
 import URLEncodedForm
 
 extension TaggedData {
@@ -38,13 +37,9 @@ extension TaggedData {
 		case "application/octet-stream":
 			return TypedDataDecoder(data, decoder: DataOnlyDecoder())
 		case .some(let mimeType):
-			if case .throwError = fallback {
-				throw Error.unknownMimeType(mimeType)
-			}
+			if case .throwError = fallback { throw Error.unknownMimeType(mimeType) }
 		case .none:
-			if case .throwError = fallback {
-				throw Error.noMimeType
-			}
+			if case .throwError = fallback { throw Error.noMimeType }
 		}
 		switch fallback {
 		case .throwError:

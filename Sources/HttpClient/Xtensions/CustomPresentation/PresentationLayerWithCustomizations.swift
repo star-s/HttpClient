@@ -39,7 +39,7 @@ public extension PresentationLayerWithCustomizations {
 		if let data = parameters as? TaggedData {
 			return data
 		}
-		return try .jsonEncoded(parameters, jsonEncoder: jsonEncoder)
+		return try .jsonEncoded(parameters, encoder: jsonEncoder)
 	}
 
 	// MARK: - PresentationLayer
@@ -79,13 +79,10 @@ public extension PresentationLayerWithCustomizations {
 	}
 
 	func decode<T: Decodable>(response: (data: Data, response: URLResponse)) async throws -> T {
-		if T.self is RawResponse.Type {
-			return RawResponse(data: response.data, response: response.response) as! T
+		let data = response.data.tagged(with: response.response.tags)
+		if T.self is TaggedData.Type {
+			return data as! T
 		}
-		return try response
-			.data
-			.tagged(with: response.response.tags)
-			.decoder(fallback: .decodeAsText, jsonDecoder: jsonDecoder)
-			.decode()
+		return try data.decoder(fallback: .decodeAsText, jsonDecoder: jsonDecoder).decode()
 	}
 }

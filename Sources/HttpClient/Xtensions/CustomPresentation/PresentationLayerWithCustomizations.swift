@@ -12,7 +12,8 @@ public protocol PresentationLayerWithCustomizations: PresentationLayer {
 	var jsonEncoder: JSONEncoder { get }
 	var jsonDecoder: JSONDecoder { get }
 
-	func headers() async throws -> HTTPHeaders
+	var headersFactory: HeadersFactory { get }
+
 	func encodeQuery<T: Encodable>(parameters: T) async throws -> String?
 	func encodeBody<T: Encodable>(parameters: T) async throws -> TaggedData
 
@@ -27,10 +28,6 @@ public extension PresentationLayerWithCustomizations {
 
 	var jsonDecoder: JSONDecoder {
 		JSONDecoder()
-	}
-
-	func headers() async throws -> HTTPHeaders {
-		.default
 	}
 
 	func encodeQuery<T: Encodable>(parameters: T) async throws -> String? {
@@ -55,14 +52,14 @@ public extension PresentationLayerWithCustomizations {
 			body = try await encodeBody(parameters: parameters)
 		}
 		return try await URLRequest(url: url)
-			.with(headers: headers())
+			.with(headers: headersFactory.makeHeaders(for: url, method: .post))
 			.with(method: .post)
 			.with(body: body)
 	}
 	
 	func prepare<T: Encodable>(get url: URL, parameters: T) async throws -> URLRequest {
 		try await URLRequest(url: url)
-			.with(headers: headers())
+			.with(headers: headersFactory.makeHeaders(for: url, method: .get))
 			.with(query: encodeQuery(parameters: parameters))
 	}
 	
@@ -74,7 +71,7 @@ public extension PresentationLayerWithCustomizations {
 			body = try await encodeBody(parameters: parameters)
 		}
 		return try await URLRequest(url: url)
-			.with(headers: headers())
+			.with(headers: headersFactory.makeHeaders(for: url, method: .put))
 			.with(method: .put)
 			.with(body: body)
 	}
@@ -87,14 +84,14 @@ public extension PresentationLayerWithCustomizations {
 			body = try await encodeBody(parameters: parameters)
 		}
 		return try await URLRequest(url: url)
-			.with(headers: headers())
+			.with(headers: headersFactory.makeHeaders(for: url, method: .patch))
 			.with(method: .patch)
 			.with(body: body)
 	}
 	
 	func prepare<T: Encodable>(delete url: URL, parameters: T) async throws -> URLRequest {
 		try await URLRequest(url: url)
-			.with(headers: headers())
+			.with(headers: headersFactory.makeHeaders(for: url, method: .delete))
 			.with(method: .delete)
 			.with(query: encodeQuery(parameters: parameters))
 	}

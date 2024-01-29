@@ -74,7 +74,7 @@ final class HttpClientTests: XCTestCase {
 		let data = try await Jsonplaceholder().fetchPost(number: 14)
 		XCTAssertEqual(data.id, 14)
 	}*/
-	
+
 	func testCustomHeaders() async throws {
 		struct DefaultPresenter: PresentationLayer {
 		}
@@ -83,14 +83,12 @@ final class HttpClientTests: XCTestCase {
 		XCTAssertFalse(requestWithDefaultHeaders.headers.isEmpty)
 		
 		struct CustomHeadersPresenter: PresentationLayerWithCustomizations {
-			var headers: HTTPHeaders
-
-			func headers() async throws -> HTTPHeaders {
-				self.headers
-			}
+			var headersFactory: HeadersFactory
 		}
 
-		let requestWithCustomHeader = try await CustomHeadersPresenter(headers: HTTPHeaders()).prepare(get: "http://somewere.org/", parameters: Parameters.void)
+		let requestWithCustomHeader = try await CustomHeadersPresenter(
+			headersFactory: HTTPHeaders.SimpleFactory(headers: HTTPHeaders())
+		).prepare(get: "http://somewere.org/", parameters: Parameters.void)
 		XCTAssertTrue(requestWithCustomHeader.headers.isEmpty)
 	}
 

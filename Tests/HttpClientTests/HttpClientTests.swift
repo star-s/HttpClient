@@ -84,6 +84,7 @@ final class HttpClientTests: XCTestCase {
 		
 		struct CustomHeadersPresenter: PresentationLayerWithCustomizations {
 			var headersFactory: HeadersFactory
+			var bodyEncoder = JSONEncoder()
 		}
 
 		let requestWithCustomHeader = try await CustomHeadersPresenter(

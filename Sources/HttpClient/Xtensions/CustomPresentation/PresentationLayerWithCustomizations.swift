@@ -6,11 +6,13 @@
 //
 
 import Foundation
+import Combine
 import HttpClientUtilities
+import URLEncodedForm
 
 public protocol PresentationLayerWithCustomizations: PresentationLayer {
-	var jsonEncoder: JSONEncoder { get }
-	var jsonDecoder: JSONDecoder { get }
+	associatedtype BodyEncoder: TopLevelEncoder where BodyEncoder.Output == Data
+	var bodyEncoder: BodyEncoder { get }
 
 	var headersFactory: HeadersFactory { get }
 
@@ -22,24 +24,12 @@ public protocol PresentationLayerWithCustomizations: PresentationLayer {
 
 public extension PresentationLayerWithCustomizations {
 
-	var jsonEncoder: JSONEncoder {
-		JSONEncoder()
-	}
-
-	var jsonDecoder: JSONDecoder {
-		JSONDecoder()
-	}
-
 	func encodeQuery<T: Encodable>(parameters: T) async throws -> String? {
 		try URLQueryEncoder().encode(parameters)
 	}
 
-	func encodeBody<T: Encodable>(parameters: T) async throws -> TaggedData {
-		try .jsonEncoded(parameters, encoder: jsonEncoder)
-	}
-
 	func decode<T: Decodable>(data: TaggedData) async throws -> T {
-		try data.decoder(fallback: .decodeAsText, jsonDecoder: jsonDecoder).decode()
+		try data.decoder(fallback: .decodeAsText).decode()
 	}
 
 	// MARK: - PresentationLayer
@@ -102,5 +92,19 @@ public extension PresentationLayerWithCustomizations {
 			return data as! T
 		}
 		return try await decode(data: data)
+	}
+}
+
+public extension PresentationLayerWithCustomizations where BodyEncoder == JSONEncoder {
+
+	func encodeBody<T: Encodable>(parameters: T) async throws -> TaggedData {
+		try .jsonEncoded(parameters, encoder: bodyEncoder)
+	}
+}
+
+public extension PresentationLayerWithCustomizations where BodyEncoder == URLEncodedFormEncoder {
+
+	func encodeBody<T: Encodable>(parameters: T) async throws -> TaggedData {
+		try .formURLEncoded(parameters, encoder: bodyEncoder)
 	}
 }

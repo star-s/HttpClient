@@ -36,6 +36,12 @@ extension TaggedData {
 			return TypedDataDecoder(data, decoder: PlaintextDecoder(encoding: textEncoding ?? .ascii))
 		case "application/octet-stream":
 			return TypedDataDecoder(data, decoder: DataOnlyDecoder())
+		case "text/javascript":
+			if T.self is String.Type {
+				return TypedDataDecoder(data, decoder: PlaintextDecoder(encoding: textEncoding ?? .ascii))
+			} else {
+				return TypedDataDecoder(data, decoder: jsonDecoder())
+			}
 		case .some(let mimeType):
 			if case .throwError = fallback { throw Error.unknownMimeType(mimeType) }
 		case .none:

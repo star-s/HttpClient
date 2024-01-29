@@ -9,6 +9,8 @@ import Foundation
 import CoreServices
 
 public protocol PresentationLayerWithDecodingPath: PresentationLayerWithCustomizations {
+	var jsonDecoder: JSONDecoder { get }
+
 	func decode<T: Decodable>(response: (data: Data, response: URLResponse), decodingPath: [DecodingKey]?) async throws -> T
 }
 
@@ -20,7 +22,11 @@ public extension PresentationLayerWithDecodingPath {
 
 	func decode<T: Decodable>(response: (data: Data, response: URLResponse), decodingPath: [DecodingKey]?) async throws -> T {
 		if (decodingPath ?? []).isEmpty {
-			return try await Super().decode(response: response)
+			return try response
+				.data
+				.tagged(with: response.response.tags)
+				.decoder(fallback: .decodeAsText, jsonDecoder: jsonDecoder)
+				.decode()
 		}
 		guard let uti = response.response.contentUTI, UTTypeConformsTo(uti, kUTTypeJSON) else {
 			throw URLError(.cannotDecodeContentData)
@@ -30,5 +36,3 @@ public extension PresentationLayerWithDecodingPath {
 		return try coder.decode(DecodingPathAdapter<T>.self, from: response.data).payload
 	}
 }
-
-private struct Super: PresentationLayer {}

@@ -15,6 +15,8 @@ public protocol PresentationLayerWithCustomizations: PresentationLayer {
 	func headers() async throws -> HTTPHeaders
 	func encodeQuery<T: Encodable>(parameters: T) async throws -> String?
 	func encodeBody<T: Encodable>(parameters: T) async throws -> TaggedData
+
+	func decode<T: Decodable>(data: TaggedData) async throws -> T
 }
 
 public extension PresentationLayerWithCustomizations {
@@ -40,6 +42,10 @@ public extension PresentationLayerWithCustomizations {
 			return data
 		}
 		return try .jsonEncoded(parameters, encoder: jsonEncoder)
+	}
+
+	func decode<T: Decodable>(data: TaggedData) async throws -> T {
+		try data.decoder(fallback: .decodeAsText, jsonDecoder: jsonDecoder).decode()
 	}
 
 	// MARK: - PresentationLayer
@@ -83,6 +89,6 @@ public extension PresentationLayerWithCustomizations {
 		if T.self is TaggedData.Type {
 			return data as! T
 		}
-		return try data.decoder(fallback: .decodeAsText, jsonDecoder: jsonDecoder).decode()
+		return try await decode(data: data)
 	}
 }

@@ -6,22 +6,34 @@
 //
 
 import Foundation
-import URLEncodedForm
 import HttpClientUtilities
 
 public protocol OAuth2PresentationLayer: PresentationLayer {
-	var settings: OAuth2Settings { get }
-	var headers: HTTPHeaders { get }
+	var headersFactory: HeadersFactory { get }
 }
 
 public extension OAuth2PresentationLayer {
 
-	var headers: HTTPHeaders { .default }
-
 	func prepare<T: Encodable>(post url: URL, parameters: T) async throws -> URLRequest {
-		try URLRequest(url: url)
-			.with(headers: headers)
+		try await URLRequest(url: url)
+			.with(headers: headersFactory.makeHeaders(for: url, method: .post))
 			.with(method: .post)
 			.with(body: .formURLEncoded(parameters))
+	}
+
+	func prepare<T: Encodable>(get url: URL, parameters: T) async throws -> URLRequest {
+		throw URLError(.resourceUnavailable)
+	}
+
+	func prepare<T: Encodable>(put url: URL, parameters: T) async throws -> URLRequest {
+		throw URLError(.resourceUnavailable)
+	}
+
+	func prepare<T: Encodable>(patch url: URL, parameters: T) async throws -> URLRequest {
+		throw URLError(.resourceUnavailable)
+	}
+
+	func prepare<T: Encodable>(delete url: URL, parameters: T) async throws -> URLRequest {
+		throw URLError(.resourceUnavailable)
 	}
 }

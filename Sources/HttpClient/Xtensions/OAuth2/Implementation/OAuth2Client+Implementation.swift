@@ -32,56 +32,40 @@ extension OAuth2Client {
 		}
 		return token
 	}
-}
-
-extension OAuth2Client where Self: HttpClientWithBaseUrl, Presenter: OAuth2PresentationLayer, Path == String {
-
-	public var baseURL: URL {
-		presenter.settings.baseURL
-	}
-
-	public var callbackURL: URL {
-		presenter.settings.redirectURL
-	}
 
 	public func prepareAuthorizationURL(responseType: ResponseType, state: String?) throws -> URL {
-		let settings = presenter.settings
 		let request = AuthorizationRequest(
 			type: responseType,
-			clientID: settings.clientID,
-			scope: settings.scope,
+			clientID: clientID,
+			scope: scope,
 			state: state,
-			redirectURL: settings.redirectURL
+			redirectURL: redirectURL
 		)
 		let query = try URLQueryEncoder(arrayEncoding: .noBrackets).encode(request) as String
-		return try makeURL(from: settings.authorizationEndpoint).appendingQuery(query)
+		return try makeURL(from: authorizationEndpoint).appendingQuery(query)
 	}
 
 	public func accessToken(_ code: String) async throws -> AccessTokenResponse {
-		let settings = presenter.settings
 		let request = AccessTokenRequest.authorizationCode(
 			code,
-			clientID: settings.clientID,
-			redirectURI: settings.redirectURL
+			clientID: clientID,
+			redirectURI: redirectURL
 		)
-		return try await post(settings.tokenEndpoint, parameters: request)
+		return try await post(tokenEndpoint, parameters: request)
 	}
 
 	public func refreshToken(_ refreshToken: String) async throws -> AccessTokenResponse {
-		let settings = presenter.settings
-		let request = AccessTokenRequest.refreshToken(refreshToken, scope: settings.scope)
-		return try await post(settings.tokenEndpoint, parameters: request)
+		let request = AccessTokenRequest.refreshToken(refreshToken, scope: scope)
+		return try await post(tokenEndpoint, parameters: request)
 	}
 
 	func accessTokenWithClientCredentials(username: String, password: String) async throws -> AccessTokenResponse {
-		let settings = presenter.settings
-		let request = AccessTokenRequest.clientCredentials(scope: settings.scope)
-		return try await post(settings.tokenEndpoint, parameters: request)
+		let request = AccessTokenRequest.clientCredentials(scope: scope)
+		return try await post(tokenEndpoint, parameters: request)
 	}
 
 	func accessTokenWithPassword(username: String, password: String) async throws -> AccessTokenResponse {
-		let settings = presenter.settings
-		let request = AccessTokenRequest.password(username: username, password: password, scope: settings.scope)
-		return try await post(settings.tokenEndpoint, parameters: request)
+		let request = AccessTokenRequest.password(username: username, password: password, scope: scope)
+		return try await post(tokenEndpoint, parameters: request)
 	}
 }

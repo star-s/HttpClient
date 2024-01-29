@@ -7,10 +7,18 @@
 
 import Foundation
 
-public protocol OAuth2Client {
+public protocol OAuth2Client: HttpClient where Presenter: OAuth2PresentationLayer {
 
-	var callbackURL: URL { get }
-	
+	var authorizationEndpoint: Path { get }
+	var tokenEndpoint: Path { get }
+
+	var redirectURL: URL { get }
+
+	var clientID: String { get }
+	var clientSecret: String? { get }
+
+	var scope: String { get }
+
 	func prepareAuthorizationURL(responseType: ResponseType, state: String?) throws -> URL
 
 	func decodeAuthorizationResponse(redirect: URL) throws -> AuthorizationResponse
@@ -32,7 +40,7 @@ public extension OAuth2Client {
 	) async throws -> AccessTokenResponse {
 		let url = try prepareAuthorizationURL(responseType: responseType, state: nil)
 		return try await withCheckedThrowingContinuation { continuation in
-			let session = ASWebAuthenticationSession(url: url, callbackURLScheme: self.callbackURL.scheme) { url, error in
+			let session = ASWebAuthenticationSession(url: url, callbackURLScheme: self.redirectURL.scheme) { url, error in
 				do {
 					if let error = error {
 						throw error

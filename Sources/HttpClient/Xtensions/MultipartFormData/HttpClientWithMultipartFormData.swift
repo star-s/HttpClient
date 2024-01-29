@@ -9,6 +9,7 @@ import Foundation
 
 public protocol HttpClientWithMultipartFormData: HttpClient where Presenter: PresentationLayerWithMultipartFormData {
 	func upload<T: Decodable>(_ path: Path, multipartFormData: @escaping (FormDataBuilder) -> Void) async throws -> T
+	func upload(_ path: Path, multipartFormData: @escaping (FormDataBuilder) -> Void) async throws
 }
 
 public extension HttpClientWithMultipartFormData {
@@ -18,5 +19,11 @@ public extension HttpClientWithMultipartFormData {
 		let response = try await transport.perform(request)
 		try await presenter.validate(response: response)
 		return try await presenter.decode(response: response)
+	}
+
+	func upload(_ path: Path, multipartFormData: @escaping (FormDataBuilder) -> Void) async throws {
+		let request = try await presenter.prepare(post: makeURL(from: path), multipartFormData: multipartFormData)
+		let response = try await transport.perform(request)
+		try await presenter.validate(response: response)
 	}
 }

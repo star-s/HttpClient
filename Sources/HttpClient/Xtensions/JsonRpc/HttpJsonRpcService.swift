@@ -7,13 +7,11 @@
 
 import Foundation
 
-public protocol HttpJsonRpcService: JsonRpcService {
-	associatedtype Path
-
+public protocol HttpJsonRpcService: ApplicationLayer, JsonRpcService {
 	var endpoint: Path { get }
 }
 
-public extension HttpJsonRpcService where Self: ApplicationLayer {
+public extension HttpJsonRpcService {
 
 	func invoke<T: Decodable>(request: JsonRpcRequest) async throws -> JsonRpcResponce<T> {
 		try await post(endpoint, parameters: request)

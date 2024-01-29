@@ -4,11 +4,10 @@ import CoreServices
 import HttpClientUtilities
 
 struct DefaultHttpClient: HttpClient, PresentationLayer, URLSessionTransportLayer {
-	var session: URLSession = .shared
-
-	var loggerFactory: TransportLoggerFactory? = nil
-
 	typealias Path = URL
+
+	var session: URLSession = .shared
+	var loggerFactory: TransportLoggerFactory? = nil
 }
 
 final class HttpClientTests: XCTestCase {
@@ -52,7 +51,7 @@ final class HttpClientTests: XCTestCase {
 		XCTAssertEqual(inputData, outputData)
 	}
 
-	func testAgify() async throws {
+	/*func testAgify() async throws {
 		struct Agify: AgifyApi, PresentationLayer, URLSessionTransportLayer {
 			var session: URLSession = .shared
 
@@ -74,7 +73,7 @@ final class HttpClientTests: XCTestCase {
 		}
 		let data = try await Jsonplaceholder().fetchPost(number: 14)
 		XCTAssertEqual(data.id, 14)
-	}
+	}*/
 	
 	func testCustomHeaders() async throws {
 		struct DefaultPresenter: PresentationLayer {

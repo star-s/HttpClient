@@ -8,14 +8,12 @@
 import Foundation
 import HttpClient
 
-public protocol JsonplaceholderApi: HttpClientWithBaseUrl where Path: PathExpressibleByInterpolation {
-}
+// MARK: - Interface
 
-public extension JsonplaceholderApi {
-	var baseURL: URL { "https://jsonplaceholder.typicode.com" }
+public protocol JsonplaceholderApi {
+	func fetchPost(number: Int) async throws -> JsonplaceholderPost
+	func fetchTodo(number: Int) async throws -> JsonplaceholderTodo
 }
-
-// MARK: - Public API
 
 public struct JsonplaceholderPost: Decodable {
 	public let userId: Int
@@ -31,11 +29,18 @@ public struct JsonplaceholderTodo: Decodable {
 	public let completed: Bool
 }
 
-public extension JsonplaceholderApi {
+public extension URL {
+	static let jsonplaceholderBaseURL: URL = "https://jsonplaceholder.typicode.com"
+}
+
+// MARK: - Implementation
+
+public extension JsonplaceholderApi where Self: ApplicationLayer, Path: PathExpressibleByInterpolation {
+
 	func fetchPost(number: Int) async throws -> JsonplaceholderPost {
 		try await get("/posts/\(number)", parameters: Parameters.void)
 	}
-	
+
 	func fetchTodo(number: Int) async throws -> JsonplaceholderTodo {
 		try await get("/todos/\(number)", parameters: Parameters.void)
 	}

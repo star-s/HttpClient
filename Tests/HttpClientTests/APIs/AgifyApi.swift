@@ -8,14 +8,7 @@
 import Foundation
 import HttpClient
 
-public protocol AgifyApi: HttpClientWithBaseUrl where Path: ExpressibleByStringLiteral {
-}
-
-public extension AgifyApi {
-	var baseURL: URL { "https://api.agify.io" }
-}
-
-// MARK: - Public API
+// MARK: - Interface
 
 public struct AgifyData: Decodable {
 	public let name: String
@@ -23,7 +16,18 @@ public struct AgifyData: Decodable {
 	public let count: Int
 }
 
-public extension AgifyApi {
+public protocol AgifyApi {
+	func getData(name: String) async throws -> AgifyData
+}
+
+public extension URL {
+	static let agifyBaseURL: URL = "https://api.agify.io"
+}
+
+// MARK: - Implementation
+
+public extension AgifyApi where Self: ApplicationLayer, Path: ExpressibleByStringLiteral {
+
 	func getData(name: String) async throws -> AgifyData {
 		try await get("/", parameters: ["name" : name])
 	}

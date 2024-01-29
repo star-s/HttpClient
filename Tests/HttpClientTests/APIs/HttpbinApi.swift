@@ -8,15 +8,16 @@
 import Foundation
 import HttpClient
 
-public protocol HttpbinApi: HttpClientWithBaseUrl where Path: PathExpressibleByInterpolation {
+// MARK: - Interface
+
+public protocol HttpbinApi {
 }
 
-public extension HttpbinApi {
-	var baseURL: URL { "https://httpbin.org" }
+public extension URL {
+	static let httpbinBaseURL: URL = "https://httpbin.org"
 }
 
-// MARK: - Public API
+// MARK: - Implementation
 
-public extension HttpbinApi {
-	
+public extension HttpbinApi where Self: ApplicationLayer, Path: PathExpressibleByInterpolation {
 }

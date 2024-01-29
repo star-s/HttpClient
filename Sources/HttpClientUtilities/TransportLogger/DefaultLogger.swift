@@ -7,6 +7,19 @@
 
 import Foundation
 
+/// Example - for debug purposes only !!!
+public struct DefaultTransportLoggerFactory: TransportLoggerFactory {
+	private let sessionConfiguration: URLSessionConfiguration?
+
+	public init(sessionConfiguration: URLSessionConfiguration? = nil) {
+		self.sessionConfiguration = sessionConfiguration
+	}
+
+	public func makeLogger() -> TransportLogger {
+		DefaultLogger(sessionConfiguration: sessionConfiguration)
+	}
+}
+
 /// For debug purposes only !!!
 /// Based on code from https://github.com/konkab/AlamofireNetworkActivityLogger/blob/master/Source/NetworkActivityLogger.swift
 public final class DefaultLogger: TransportLogger {
@@ -48,6 +61,7 @@ public final class DefaultLogger: TransportLogger {
 		case .failure(let error):
 			log(error: error, of: request, taskInterval: taskInterval)
 		}
+		self.request = nil
 	}
 
 	// MARK: - Internal stuff

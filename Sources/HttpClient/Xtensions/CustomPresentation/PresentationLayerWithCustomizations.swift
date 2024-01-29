@@ -33,15 +33,12 @@ public extension PresentationLayerWithCustomizations {
 		.default
 	}
 
-	func encodeQuery<T: Encodable>(parameters: T) throws -> String? {
+	func encodeQuery<T: Encodable>(parameters: T) async throws -> String? {
 		try URLQueryEncoder().encode(parameters)
 	}
 
-	func encodeBody<T: Encodable>(parameters: T) throws -> TaggedData {
-		if let data = parameters as? TaggedData {
-			return data
-		}
-		return try .jsonEncoded(parameters, encoder: jsonEncoder)
+	func encodeBody<T: Encodable>(parameters: T) async throws -> TaggedData {
+		try .jsonEncoded(parameters, encoder: jsonEncoder)
 	}
 
 	func decode<T: Decodable>(data: TaggedData) async throws -> T {
@@ -51,10 +48,16 @@ public extension PresentationLayerWithCustomizations {
 	// MARK: - PresentationLayer
 
 	func prepare<T: Encodable>(post url: URL, parameters: T) async throws -> URLRequest {
-		try await URLRequest(url: url)
+		let body: TaggedData
+		if let data = parameters as? TaggedData {
+			body = data
+		} else {
+			body = try await encodeBody(parameters: parameters)
+		}
+		return try await URLRequest(url: url)
 			.with(headers: headers())
 			.with(method: .post)
-			.with(body: encodeBody(parameters: parameters))
+			.with(body: body)
 	}
 	
 	func prepare<T: Encodable>(get url: URL, parameters: T) async throws -> URLRequest {
@@ -64,17 +67,29 @@ public extension PresentationLayerWithCustomizations {
 	}
 	
 	func prepare<T: Encodable>(put url: URL, parameters: T) async throws -> URLRequest {
-		try await URLRequest(url: url)
+		let body: TaggedData
+		if let data = parameters as? TaggedData {
+			body = data
+		} else {
+			body = try await encodeBody(parameters: parameters)
+		}
+		return try await URLRequest(url: url)
 			.with(headers: headers())
 			.with(method: .put)
-			.with(body: encodeBody(parameters: parameters))
+			.with(body: body)
 	}
 	
 	func prepare<T: Encodable>(patch url: URL, parameters: T) async throws -> URLRequest {
-		try await URLRequest(url: url)
+		let body: TaggedData
+		if let data = parameters as? TaggedData {
+			body = data
+		} else {
+			body = try await encodeBody(parameters: parameters)
+		}
+		return try await URLRequest(url: url)
 			.with(headers: headers())
 			.with(method: .patch)
-			.with(body: encodeBody(parameters: parameters))
+			.with(body: body)
 	}
 	
 	func prepare<T: Encodable>(delete url: URL, parameters: T) async throws -> URLRequest {

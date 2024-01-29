@@ -82,7 +82,7 @@ final class HttpClientTests: XCTestCase {
 		let requestWithDefaultHeaders = try await DefaultPresenter().prepare(get: "http://somewere.org/", parameters: Parameters.void)
 		XCTAssertFalse(requestWithDefaultHeaders.headers.isEmpty)
 		
-		struct CustomHeadersPresenter: PresentationLayerWithCustomizations {
+		struct CustomHeadersPresenter: CustomizablePresentationLayer {
 			var headersFactory: HeadersFactory
 			var bodyEncoder = JSONEncoder()
 		}

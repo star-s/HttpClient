@@ -10,7 +10,7 @@ import Combine
 import HttpClientUtilities
 import URLEncodedForm
 
-public protocol PresentationLayerWithCustomizations: PresentationLayer {
+public protocol CustomizablePresentationLayer: PresentationLayer {
 	associatedtype BodyEncoder: TopLevelEncoder where BodyEncoder.Output == Data
 	var bodyEncoder: BodyEncoder { get }
 
@@ -22,7 +22,7 @@ public protocol PresentationLayerWithCustomizations: PresentationLayer {
 	func decode<T: Decodable>(data: TaggedData) async throws -> T
 }
 
-public extension PresentationLayerWithCustomizations {
+public extension CustomizablePresentationLayer {
 
 	func encodeQuery<T: Encodable>(parameters: T) async throws -> String? {
 		try URLQueryEncoder().encode(parameters)
@@ -95,14 +95,14 @@ public extension PresentationLayerWithCustomizations {
 	}
 }
 
-public extension PresentationLayerWithCustomizations where BodyEncoder == JSONEncoder {
+public extension CustomizablePresentationLayer where BodyEncoder == JSONEncoder {
 
 	func encodeBody<T: Encodable>(parameters: T) async throws -> TaggedData {
 		try .jsonEncoded(parameters, encoder: bodyEncoder)
 	}
 }
 
-public extension PresentationLayerWithCustomizations where BodyEncoder == URLEncodedFormEncoder {
+public extension CustomizablePresentationLayer where BodyEncoder == URLEncodedFormEncoder {
 
 	func encodeBody<T: Encodable>(parameters: T) async throws -> TaggedData {
 		try .formURLEncoded(parameters, encoder: bodyEncoder)

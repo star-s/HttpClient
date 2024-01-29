@@ -24,7 +24,7 @@ public extension PresentationLayerWithMultipartFormData {
 	}
 }
 
-public extension PresentationLayerWithMultipartFormData where Self: PresentationLayerWithCustomizations {
+public extension PresentationLayerWithMultipartFormData where Self: CustomizablePresentationLayer {
 	
 	func prepare(post url: URL, multipartFormData: @escaping (FormDataBuilder) -> Void) async throws -> URLRequest {
 		let formData = MultipartFormData()

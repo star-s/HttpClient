@@ -3,13 +3,6 @@ import XCTest
 import CoreServices
 import HttpClientUtilities
 
-struct DefaultHttpClient: HttpClient, PresentationLayer, URLSessionTransportLayer {
-	typealias Path = URL
-
-	var session: URLSession = .shared
-	var loggerFactory: TransportLoggerFactory? = nil
-}
-
 final class HttpClientTests: XCTestCase {
 
     func testLoadYandexWebPage() async throws {
@@ -51,43 +44,38 @@ final class HttpClientTests: XCTestCase {
 		XCTAssertEqual(inputData, outputData)
 	}
 
-	/*func testAgify() async throws {
-		struct Agify: AgifyApi, PresentationLayer, URLSessionTransportLayer {
-			var session: URLSession = .shared
-
-			var loggerFactory: TransportLoggerFactory? = nil
-
+	func testAgify() async throws {
+		struct Agify: AgifyApi, HttpClientWithBaseUrl {
 			typealias Path = String
+
+			let presenter = DefaultPresenter()
+			let transport = DefaultTransport()
+
+			let baseURL: URL = .agifyBaseURL
 		}
 		let data = try await Agify().getData(name: "bella")
 		XCTAssertEqual(data.name, "bella")
 	}
 	
 	func testJsonplaceholder() async throws {
-		struct Jsonplaceholder: JsonplaceholderApi, PresentationLayer, URLSessionTransportLayer {
-			var session: URLSession = .shared
-
-			var loggerFactory: TransportLoggerFactory? = nil
-
+		struct Jsonplaceholder: JsonplaceholderApi, HttpClientWithBaseUrl {
 			typealias Path = String
+
+			let presenter = DefaultPresenter()
+			let transport = DefaultTransport()
+
+			let baseURL: URL = .jsonplaceholderBaseURL
 		}
 		let data = try await Jsonplaceholder().fetchPost(number: 14)
 		XCTAssertEqual(data.id, 14)
-	}*/
+	}
 
 	func testCustomHeaders() async throws {
-		struct DefaultPresenter: PresentationLayer {
-		}
-		
+
 		let requestWithDefaultHeaders = try await DefaultPresenter().prepare(get: "http://somewere.org/", parameters: Parameters.void)
 		XCTAssertFalse(requestWithDefaultHeaders.headers.isEmpty)
 		
-		struct CustomHeadersPresenter: CustomizablePresentationLayer {
-			var headersFactory: HeadersFactory
-			var bodyEncoder = JSONEncoder()
-		}
-
-		let requestWithCustomHeader = try await CustomHeadersPresenter(
+		let requestWithCustomHeader = try await JsonPresenter(
 			headersFactory: HTTPHeaders.SimpleFactory(headers: HTTPHeaders())
 		).prepare(get: "http://somewere.org/", parameters: Parameters.void)
 		XCTAssertTrue(requestWithCustomHeader.headers.isEmpty)

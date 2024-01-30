@@ -6,11 +6,10 @@
 //
 
 import Foundation
+import HttpClientUtilities
 import URLEncodedForm
 
-public struct DefaultPresenter: PresentationLayer {
-	public init() {}
-}
+public typealias DefaultPresenter = JsonPresenter
 
 public struct JsonPresenter: CustomizablePresentationLayer {
 	public let bodyEncoder: JSONEncoder

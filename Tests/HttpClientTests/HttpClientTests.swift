@@ -48,7 +48,7 @@ final class HttpClientTests: XCTestCase {
 		struct Agify: AgifyApi, HttpClientWithBaseUrl {
 			typealias Path = String
 
-			let presenter = DefaultPresenter()
+			let presenter = JsonPresenter()
 			let transport = DefaultTransport()
 
 			let baseURL: URL = .agifyBaseURL
@@ -61,7 +61,7 @@ final class HttpClientTests: XCTestCase {
 		struct Jsonplaceholder: JsonplaceholderApi, HttpClientWithBaseUrl {
 			typealias Path = String
 
-			let presenter = DefaultPresenter()
+			let presenter = JsonPresenter()
 			let transport = DefaultTransport()
 
 			let baseURL: URL = .jsonplaceholderBaseURL
@@ -72,7 +72,7 @@ final class HttpClientTests: XCTestCase {
 
 	func testCustomHeaders() async throws {
 
-		let requestWithDefaultHeaders = try await DefaultPresenter().prepare(get: "http://somewere.org/", parameters: Parameters.void)
+		let requestWithDefaultHeaders = try await JsonPresenter().prepare(get: "http://somewere.org/", parameters: Parameters.void)
 		XCTAssertFalse(requestWithDefaultHeaders.headers.isEmpty)
 		
 		let requestWithCustomHeader = try await JsonPresenter(

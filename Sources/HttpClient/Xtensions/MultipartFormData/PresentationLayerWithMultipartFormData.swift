@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import HttpClientUtilities
 
 public protocol PresentationLayerWithMultipartFormData: PresentationLayer {
 	func prepare(post url: URL, multipartFormData: @escaping (FormDataBuilder) -> Void) async throws -> URLRequest

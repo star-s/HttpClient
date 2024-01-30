@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import HttpClientUtilities
 
 public protocol HttpClientWithDecodingPath: HttpClient where Presenter: PresentationLayerWithDecodingPath {
 	

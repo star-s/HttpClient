@@ -9,7 +9,7 @@ import Foundation
 
 extension URLRequest {
 	
-	func with(body multipartFormData: MultipartFormData, encodingMemoryThreshold: UInt64 = MultipartFormData.encodingMemoryThreshold) throws -> URLRequest {
+	public func with(body multipartFormData: MultipartFormData, encodingMemoryThreshold: UInt64 = MultipartFormData.encodingMemoryThreshold) throws -> URLRequest {
 		var request = self
 		if multipartFormData.contentLength < encodingMemoryThreshold {
 			request.httpBody = try multipartFormData.encode()

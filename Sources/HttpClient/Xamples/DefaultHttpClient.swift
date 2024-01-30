@@ -14,7 +14,7 @@ public struct DefaultHttpClient<P: PresentationLayer, T: TransportLayer>: HttpCl
 	public let transport: T
 
 	public init(
-		presenter: P = DefaultPresenter(),
+		presenter: P = JsonPresenter(),
 		transport: T = DefaultTransport()
 	) {
 		self.presenter = presenter

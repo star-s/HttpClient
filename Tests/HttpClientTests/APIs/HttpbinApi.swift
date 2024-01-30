@@ -7,6 +7,7 @@
 
 import Foundation
 import HttpClient
+import HttpClientUtilities
 
 // MARK: - Interface
 

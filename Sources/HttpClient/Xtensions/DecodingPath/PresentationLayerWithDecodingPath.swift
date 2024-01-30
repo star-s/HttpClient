@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreServices
+import HttpClientUtilities
 
 public protocol PresentationLayerWithDecodingPath: PresentationLayer {
 	var jsonDecoder: JSONDecoder { get }

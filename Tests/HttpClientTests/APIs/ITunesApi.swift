@@ -66,7 +66,7 @@ struct ITunecClient: HttpClient, ITunesApi {
 		let url: URL?
 	}
 
-	let presenter = DefaultPresenter()
+	let presenter = JsonPresenter()
 	let transport = DefaultTransport()
 
 	func makeURL(from path: Path) throws -> URL {

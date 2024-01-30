@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import HttpClientUtilities
 
 public protocol HttpClientWithMultipartFormData: HttpClient where Presenter: PresentationLayerWithMultipartFormData {
 	func upload<T: Decodable>(_ path: Path, multipartFormData: @escaping (FormDataBuilder) -> Void) async throws -> T

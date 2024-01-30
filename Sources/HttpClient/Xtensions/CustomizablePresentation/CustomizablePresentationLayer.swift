@@ -86,6 +86,8 @@ public extension CustomizablePresentationLayer {
 			.with(query: encodeQuery(parameters: parameters))
 	}
 
+	func validate(response: (data: Data, response: URLResponse)) async throws {}
+
 	func decode<T: Decodable>(response: (data: Data, response: URLResponse)) async throws -> T {
 		let data = response.data.tagged(with: response.response.tags)
 		if T.self is TaggedData.Type {

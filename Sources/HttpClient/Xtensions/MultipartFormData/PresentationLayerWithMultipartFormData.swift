@@ -14,13 +14,12 @@ public protocol PresentationLayerWithMultipartFormData: PresentationLayer {
 public extension PresentationLayerWithMultipartFormData {
 	
 	func prepare(post url: URL, multipartFormData: @escaping (FormDataBuilder) -> Void) async throws -> URLRequest {
-		try await withCheckedThrowingContinuation { continuation in
-			let formData = MultipartFormData()
-			multipartFormData(formData)
-			continuation.resume(with: Result {
-				try URLRequest(url: url).with(headers: .default).with(method: .post).with(body: formData)
-			})
-		}
+		let formData = MultipartFormData()
+		multipartFormData(formData)
+		return try URLRequest(url: url)
+			.with(headers: .default)
+			.with(method: .post)
+			.with(body: formData)
 	}
 }
 

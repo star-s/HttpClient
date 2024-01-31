@@ -45,7 +45,7 @@ extension String: LosslessDataConvertible {
 extension Array: LosslessDataConvertible where Element == UInt8 {
     /// Converts this `[UInt8]` to `Data`.
     public func convertToData() -> Data {
-        return Data(bytes: self)
+        return Data(self)
     }
 
     /// Converts `Data` to `[UInt8]`.

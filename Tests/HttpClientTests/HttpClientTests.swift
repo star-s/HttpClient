@@ -49,7 +49,7 @@ final class HttpClientTests: XCTestCase {
 			typealias Path = String
 
 			let presenter = JsonPresenter()
-			let transport = URLSession.shared.transportWithDefaultLogger()
+			let transport = URLSession.shared.transportWithLogger()
 
 			let baseURL: URL = .agifyBaseURL
 		}
@@ -62,7 +62,7 @@ final class HttpClientTests: XCTestCase {
 			typealias Path = String
 
 			let presenter = JsonPresenter()
-			let transport = URLSession.shared.transportWithDefaultLogger()
+			let transport = URLSession.shared.transportWithLogger()
 
 			let baseURL: URL = .jsonplaceholderBaseURL
 		}

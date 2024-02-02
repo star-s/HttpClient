@@ -22,7 +22,7 @@ struct OpenRpc<T: TransportLayer>: HttpClientWithBaseUrl, JsonRpcService {
 	var endpoint: String
 
 	init(
-		transport: T = URLSession.shared.transportWithDefaultLogger(),
+		transport: T = URLSession.shared.transportWithLogger(),
 		baseURL: URL = .openRpcBaseURL,
 		endpoint: String
 	) {

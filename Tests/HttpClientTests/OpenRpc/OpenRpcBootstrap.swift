@@ -78,5 +78,5 @@ private extension URLRequest {
 }
 
 class JsonRpcTestCase: XCTestCase {
-	let openRpcApi: OpenRpcApi = OpenRpc(transport: TransportMock().transportWithDefaultLogger(), endpoint: "/")
+	let openRpcApi: OpenRpcApi = OpenRpc(transport: TransportMock().transportWithLogger(), endpoint: "/")
 }

@@ -9,46 +9,47 @@ import Foundation
 
 /// For debug purposes only !!!
 /// Based on code from https://github.com/konkab/AlamofireNetworkActivityLogger/blob/master/Source/NetworkActivityLogger.swift
-public final class DefaultLogger: TransportLogger {
+public struct DefaultTransportLogger: TransportLogger {
 
 	private let sessionConfiguration: URLSessionConfiguration?
-	private var request: URLRequest?
-	private var startDate: Date?
 
 	public init(sessionConfiguration: URLSessionConfiguration? = nil) {
 		self.sessionConfiguration = sessionConfiguration
 	}
 
-	public func log(request: URLRequest) {
-		startDate = Date()
+	public func log(request: URLRequest) -> ResultLogger {
+		let startDate = Date()
 
 		guard let httpMethod = request.httpMethod,
 			let requestURL = request.url
 			else {
-				return
+				return DefaultResultLogger(request: request, startDate: startDate)
 		}
 		let cURL = request.cURLDescription(sessionConfiguration: sessionConfiguration)
 
-		self.logDivider()
+		logDivider()
 
 		print("\(httpMethod) '\(requestURL.absoluteString)':")
 
 		print("cURL:\n\(cURL)\n")
 
-		self.request = request
+		return DefaultResultLogger(request: request, startDate: startDate)
 	}
+}
 
-	public func log(result: Result<(data: Data, response: URLResponse), Error>) {
-		guard let taskInterval = startDate.map({ DateInterval(start: $0, end: Date()) }), let request = request else {
-			return
-		}
+struct DefaultResultLogger: ResultLogger {
+	let request: URLRequest
+	let startDate: Date
+
+	func log(result: Result<(data: Data, response: URLResponse), Error>) {
+		let taskInterval = DateInterval(start: startDate, end: Date())
+
 		switch result {
-		case .success(let response):
-			log(response: response, of: request, taskInterval: taskInterval)
-		case .failure(let error):
-			log(error: error, of: request, taskInterval: taskInterval)
+			case .success(let response):
+				log(response: response, of: request, taskInterval: taskInterval)
+			case .failure(let error):
+				log(error: error, of: request, taskInterval: taskInterval)
 		}
-		self.request = nil
 	}
 
 	// MARK: - Internal stuff
@@ -62,7 +63,7 @@ public final class DefaultLogger: TransportLogger {
 		guard let response = response.response as? HTTPURLResponse else {
 			return
 		}
-		self.logDivider()
+		logDivider()
 
 		let elapsedTime = taskInterval.duration
 
@@ -89,18 +90,14 @@ public final class DefaultLogger: TransportLogger {
 
 	private func log(error: Error, of request: URLRequest, taskInterval: DateInterval) {
 		guard let httpMethod = request.httpMethod,
-			let requestURL = request.url
-			else {
-				return
+			  let requestURL = request.url
+		else {
+			return
 		}
 		let elapsedTime = taskInterval.duration
 
 		print("[Error] \(httpMethod) '\(requestURL.absoluteString)' [\(String(format: "%.04f", elapsedTime)) s]:")
 		print(error)
-	}
-
-	private func logDivider() {
-		print("---------------------")
 	}
 
 	private func logHeaders(headers: [AnyHashable : Any]) {
@@ -110,4 +107,8 @@ public final class DefaultLogger: TransportLogger {
 		}
 		print("]")
 	}
+}
+
+private func logDivider() {
+	print("---------------------")
 }

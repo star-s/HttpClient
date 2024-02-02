@@ -9,35 +9,28 @@ import Foundation
 import HttpClientUtilities
 
 public extension TransportLayer {
-	func transportWithLogger(_ logger: @escaping () -> TransportLogger) -> TransportLoggerAdapter<Self> {
+	func transportWithLogger(_ logger: TransportLogger = DefaultTransportLogger(sessionConfiguration: .default)) -> TransportLoggerAdapter<Self> {
 		TransportLoggerAdapter(transport: self, logger: logger)
-	}
-
-	func transportWithDefaultLogger() -> TransportLoggerAdapter<Self> {
-		TransportLoggerAdapter(transport: self) {
-			DefaultLogger(sessionConfiguration: .default)
-		}
 	}
 }
 
 public struct TransportLoggerAdapter<T: TransportLayer>: TransportLayer {
 	private let transport: T
-	private let logger: () -> TransportLogger
+	private let logger: TransportLogger
 
-	public init(transport: T, logger: @escaping () -> TransportLogger) {
+	public init(transport: T, logger: TransportLogger) {
 		self.transport = transport
 		self.logger = logger
 	}
 
 	public func perform(_ request: URLRequest) async throws -> (data: Data, response: URLResponse) {
-		let logger = logger()
-		logger.log(request: request)
+		let responseLogger = logger.log(request: request)
 		do {
 			let response = try await transport.perform(request)
-			logger.log(result: .success(response))
+			responseLogger.log(result: .success(response))
 			return response
 		} catch {
-			logger.log(result: .failure(error))
+			responseLogger.log(result: .failure(error))
 			throw error
 		}
 	}

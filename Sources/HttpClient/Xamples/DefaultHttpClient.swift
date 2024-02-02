@@ -15,7 +15,7 @@ public struct DefaultHttpClient<P: PresentationLayer, T: TransportLayer>: HttpCl
 
 	public init(
 		presenter: P = JsonPresenter(),
-		transport: T = URLSession.shared.transportWithDefaultLogger()
+		transport: T = URLSession.shared.transportWithLogger()
 	) {
 		self.presenter = presenter
 		self.transport = transport

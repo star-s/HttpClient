@@ -9,9 +9,19 @@ import Foundation
 
 public enum Parameters: Encodable {
 	case void
+	case voidArray
+	case null
 
 	public func encode(to encoder: Encoder) throws {
-		struct Void: Encodable {}
-		try Void().encode(to: encoder)
+		var container = encoder.singleValueContainer()
+		switch self {
+			case .void:
+				struct Void: Encodable {}
+				try container.encode(Void())
+			case .voidArray:
+				try container.encode([String]())
+			case .null:
+				try container.encodeNil()
+		}
 	}
 }

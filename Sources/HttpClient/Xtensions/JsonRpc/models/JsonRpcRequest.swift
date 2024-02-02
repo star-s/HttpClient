@@ -10,11 +10,11 @@ import Foundation
 public struct JsonRpcRequest {
 	public let jsonrpc: JsonRpcVersion
 	public let method: String
-	public let id: String?
+	public let id: JsonRpcId?
 
 	private let paramsEncoder: (inout KeyedEncodingContainer<CodingKeys>) throws -> Void
 
-	public init<T: Encodable>(version: JsonRpcVersion = .v2_0, method: String, params: T, id: String? = nil) {
+	public init<T: Encodable>(version: JsonRpcVersion = .v2_0, method: String, params: T, id: JsonRpcId? = nil) {
 		self.jsonrpc = version
 		self.method = method
 		self.paramsEncoder = { try $0.encode(params, forKey: .params) }
@@ -36,6 +36,6 @@ extension JsonRpcRequest: Encodable {
 		try container.encode(jsonrpc, forKey: .jsonrpc)
 		try container.encode(method, forKey: .method)
 		try paramsEncoder(&container)
-		try container.encode(id, forKey: .id)
+		try container.encodeIfPresent(id, forKey: .id)
 	}
 }

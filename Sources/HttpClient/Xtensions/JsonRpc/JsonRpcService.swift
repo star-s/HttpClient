@@ -7,18 +7,24 @@
 
 import Foundation
 
-public protocol JsonRpcService {
-	func invoke<T: Decodable>(request: JsonRpcRequest) async throws -> JsonRpcResponce<T>
-	func notify(request: JsonRpcRequest) async throws
-	func performBatch(requests: [JsonRpcRequest]) async throws -> JsonRpcBatchResponse
+public protocol JsonRpcService: ApplicationLayer, ApplicationLayerWithoutReturnValue {
+	var endpoint: Path { get }
+
+	func invoke<E: Encodable, D: Decodable>(method: String, params: E, id: JsonRpcId) async throws -> D
+	func notify<E: Encodable>(method: String, params: E) async throws
 }
 
 public extension JsonRpcService {
-	func invoke<E: Encodable, D: Decodable>(method: String, params: E, id: String? = nil) async throws -> D {
-		try await invoke(request: JsonRpcRequest(method: method, params: params, id: id)).result
+	func invoke<E: Encodable, D: Decodable>(method: String, params: E, id: JsonRpcId) async throws -> D {
+		let response: JsonRpcResponce<D> = try await post(endpoint, parameters: JsonRpcRequest(method: method, params: params, id: id))
+		return response.result
 	}
 
 	func notify<E: Encodable>(method: String, params: E) async throws {
-		try await notify(request: JsonRpcRequest(method: method, params: params))
+		try await post(endpoint, parameters: JsonRpcRequest(method: method, params: params))
+	}
+
+	func performBatch(requests: [JsonRpcRequest]) async throws -> JsonRpcBatchResponse {
+		try await post(endpoint, parameters: requests)
 	}
 }

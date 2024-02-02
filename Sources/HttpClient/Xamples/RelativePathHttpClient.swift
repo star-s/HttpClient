@@ -18,7 +18,7 @@ public struct RelativePathHttpClient<P: PresentationLayer, T: TransportLayer>: H
 	public init(
 		baseURL: URL,
 		presenter: P = JsonPresenter(),
-		transport: T = DefaultTransport()
+		transport: T = URLSession.shared.transportWithDefaultLogger()
 	) {
 		self.baseURL = baseURL
 		self.presenter = presenter

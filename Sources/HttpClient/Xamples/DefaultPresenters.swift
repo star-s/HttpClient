@@ -9,8 +9,6 @@ import Foundation
 import HttpClientUtilities
 import URLEncodedForm
 
-public typealias DefaultPresenter = JsonPresenter
-
 public struct JsonPresenter: CustomizablePresentationLayer {
 	public let bodyEncoder: JSONEncoder
 	public let headersFactory: HeadersFactory

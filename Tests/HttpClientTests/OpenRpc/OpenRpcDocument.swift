@@ -103,3 +103,23 @@ extension OpenRpcDocument.Method.Example.Result.Value: Codable {
 		}
 	}
 }
+
+extension OpenRpcDocument {
+	static var simpleRpc: OpenRpcDocument {
+		// TODO: load json from resources
+		OpenRpcDocument(
+			openrpc: "1.0.0-rc1",
+			info: Info(title: "Simple RPC overview", version: "2.0.0", description: nil, license: nil),
+			methods: []
+		)
+	}
+
+	static var petstore: OpenRpcDocument {
+		// TODO: load json from resources
+		OpenRpcDocument(
+			openrpc: "1.0.0-rc1",
+			info: Info(title: "Petstore", version: "1.0.0", description: nil, license: nil),
+			methods: []
+		)
+	}
+}

@@ -46,9 +46,7 @@ struct CreatePetRequest: Encodable {
 
 extension OpenRpc: PetstoreApi {}
 
-final class PetstoreTests: XCTestCase {
-
-	let openRpcApi: OpenRpcApi = OpenRpcMock()
+final class PetstoreTests: JsonRpcTestCase {
 
 	func testListPets() async throws {
 		let result = try await openRpcApi.bootstrapPetstore().listPets(limit: 20)

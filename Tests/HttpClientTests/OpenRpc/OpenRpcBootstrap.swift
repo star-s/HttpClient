@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import XCTest
 import HttpClient
 import HttpClientUtilities
 
@@ -23,40 +24,15 @@ extension OpenRpcApi {
 	}
 }
 
+// MARK: -
+
 extension OpenRpcApi where Self: JsonRpcService {
 	func bootstrap(_ document: OpenRpcDocument) async throws -> String {
 		try await invoke(method: "mock", params: document, id: nil)
 	}
 }
 
-extension OpenRpcDocument {
-	static var simpleRpc: OpenRpcDocument {
-		// TODO: load json from resources
-		OpenRpcDocument(
-			openrpc: "1.0.0-rc1",
-			info: Info(title: "Simple RPC overview", version: "2.0.0", description: nil, license: nil),
-			methods: []
-		)
-	}
-
-	static var petstore: OpenRpcDocument {
-		// TODO: load json from resources
-		OpenRpcDocument(
-			openrpc: "1.0.0-rc1",
-			info: Info(title: "Petstore", version: "1.0.0", description: nil, license: nil),
-			methods: []
-		)
-	}
-}
-
-struct OpenRpcMock: HttpClient, JsonRpcService, OpenRpcApi {
-	typealias Path = URL
-
-	let endpoint: URL = .openRpcBaseURL
-
-	let presenter = JsonPresenter()
-	let transport = TransportMock()
-}
+extension OpenRpc: OpenRpcApi {}
 
 struct TransportMock: TransportLayer {
 	func perform(_ request: URLRequest) async throws -> (data: Data, response: URLResponse) {
@@ -99,4 +75,8 @@ private extension URLRequest {
 		)
 		return (data: responseData.data, response: response)
 	}
+}
+
+class JsonRpcTestCase: XCTestCase {
+	let openRpcApi: OpenRpcApi = OpenRpc(transport: TransportMock().transportWithDefaultLogger(), endpoint: "/")
 }

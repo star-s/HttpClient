@@ -38,9 +38,7 @@ extension OpenRpc: SimpleRpcApi {}
 
 // MARK: -
 
-final class SimpleRpcTests: XCTestCase {
-
-	let openRpcApi: OpenRpcApi = OpenRpcMock()
+final class SimpleRpcTests: JsonRpcTestCase {
 
 	func testGetVersions() async throws {
 		let result = try await openRpcApi.bootstrapSimpleRpc().getVersions()

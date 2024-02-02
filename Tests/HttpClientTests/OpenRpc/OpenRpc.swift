@@ -12,13 +12,22 @@ extension URL {
 	static let openRpcBaseURL: URL = "https://mock.open-rpc.org"
 }
 
-struct OpenRpc: HttpClientWithBaseUrl, JsonRpcService {
+struct OpenRpc<T: TransportLayer>: HttpClientWithBaseUrl, JsonRpcService {
 	typealias Path = String
 
 	let presenter = JsonPresenter()
-	let transport = DefaultTransport()
 
-	var baseURL: URL = .openRpcBaseURL
-
+	var transport: T
+	var baseURL: URL
 	var endpoint: String
+
+	init(
+		transport: T = URLSession.shared.transportWithDefaultLogger(),
+		baseURL: URL = .openRpcBaseURL,
+		endpoint: String
+	) {
+		self.transport = transport
+		self.baseURL = baseURL
+		self.endpoint = endpoint
+	}
 }

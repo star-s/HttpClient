@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct DefaultHttpClient<P: PresentationLayer, T: TransportLayer>: HttpClient {
+public struct SampleHttpClient<P: PresentationLayer, T: TransportLayer>: HttpClient {
 	public typealias Path = URL
 
 	public let presenter: P

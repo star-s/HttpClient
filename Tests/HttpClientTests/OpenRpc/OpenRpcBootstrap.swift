@@ -34,23 +34,28 @@ extension OpenRpcApi where Self: JsonRpcService {
 
 extension OpenRpc: OpenRpcApi {}
 
-struct TransportMock: TransportLayer {
-	func perform(_ request: URLRequest) async throws -> (data: Data, response: URLResponse) {
-		try request.handleJsonRpcRequest(OpenRpcDocument.self) {
-			switch $0.info.title {
-				case "Simple RPC overview":
-					return "simpleRpcOverview-2.0.0"
-				case "Petstore":
-					return "petstore-1.0.0"
-				default:
-					throw URLError(.cannotDecodeContentData)
+// MARK: - Tests
+
+class JsonRpcTestCase: XCTestCase {
+	let openRpcApi: OpenRpcApi = {
+		let transport = TransportMock {
+			try $0.handleJsonRpcRequest(OpenRpcDocument.self) {
+				switch $0.info.title {
+					case "Simple RPC overview":
+						return "simpleRpcOverview-2.0.0"
+					case "Petstore":
+						return "petstore-1.0.0"
+					default:
+						throw URLError(.cannotDecodeContentData)
+				}
 			}
-		}
-	}
+		}.transportWithLogger()
+		return OpenRpc(transport: transport, endpoint: "/")
+	}()
 }
 
 private extension URLRequest {
- 	private struct JsonRpcRequest<T: Decodable>: Decodable {
+	private struct JsonRpcRequest<T: Decodable>: Decodable {
 		let method: String
 		let params: T
 		let id: JsonRpcId?
@@ -75,8 +80,4 @@ private extension URLRequest {
 		)
 		return (data: responseData.data, response: response)
 	}
-}
-
-class JsonRpcTestCase: XCTestCase {
-	let openRpcApi: OpenRpcApi = OpenRpc(transport: TransportMock().transportWithLogger(), endpoint: "/")
 }

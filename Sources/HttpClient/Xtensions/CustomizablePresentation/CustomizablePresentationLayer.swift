@@ -11,10 +11,10 @@ import HttpClientUtilities
 import URLEncodedForm
 
 public protocol CustomizablePresentationLayer: PresentationLayer {
+	var headersFactory: HeadersFactory { get }
+
 	associatedtype BodyEncoder: TopLevelEncoder where BodyEncoder.Output == Data
 	var bodyEncoder: BodyEncoder { get }
-
-	var headersFactory: HeadersFactory { get }
 
 	func encodeQuery<T: Encodable>(parameters: T) async throws -> String?
 	func encodeBody<T: Encodable>(parameters: T) async throws -> TaggedData

@@ -10,27 +10,27 @@ import HttpClientUtilities
 import URLEncodedForm
 
 public struct JsonPresenter: CustomizablePresentationLayer {
-	public let bodyEncoder: JSONEncoder
 	public let headersFactory: HeadersFactory
+	public let bodyEncoder: JSONEncoder
 
 	public init(
-		bodyEncoder: JSONEncoder = JSONEncoder(),
-		headersFactory: HeadersFactory = HTTPHeaders.defaultFactory
+		headersFactory: HeadersFactory = HTTPHeaders.defaultFactory,
+		bodyEncoder: JSONEncoder = JSONEncoder()
 	) {
-		self.bodyEncoder = bodyEncoder
 		self.headersFactory = headersFactory
+		self.bodyEncoder = bodyEncoder
 	}
 }
 
 public struct URLEncodedFormPresenter: CustomizablePresentationLayer {
-	public let bodyEncoder: URLEncodedFormEncoder
 	public let headersFactory: HeadersFactory
+	public let bodyEncoder: URLEncodedFormEncoder
 
 	public init(
-		bodyEncoder: URLEncodedFormEncoder = URLEncodedFormEncoder(),
-		headersFactory: HeadersFactory = HTTPHeaders.defaultFactory
+		headersFactory: HeadersFactory = HTTPHeaders.defaultFactory,
+		bodyEncoder: URLEncodedFormEncoder = URLEncodedFormEncoder()
 	) {
-		self.bodyEncoder = bodyEncoder
 		self.headersFactory = headersFactory
+		self.bodyEncoder = bodyEncoder
 	}
 }

@@ -28,7 +28,7 @@ extension OpenRpcApi {
 
 extension OpenRpcApi where Self: JsonRpcService {
 	func bootstrap(_ document: OpenRpcDocument) async throws -> String {
-		try await invoke(method: "mock", params: document, id: nil)
+		try await invoke(method: "mock", params: document)
 	}
 }
 

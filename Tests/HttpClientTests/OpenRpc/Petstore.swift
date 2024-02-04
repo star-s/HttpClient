@@ -27,15 +27,15 @@ struct Pet: Decodable {
 
 extension PetstoreApi where Self: JsonRpcService {
 	func listPets(limit: Int) async throws -> [Pet] {
-		try await invoke(method: "list_pets", params: [limit], id: .null)
+		try await invoke(method: "list_pets", params: [limit])
 	}
 
 	func createPet(name: String, tag: String?) async throws -> Int {
-		try await invoke(method: "create_pet", params: CreatePetRequest(newPetName: name, newPetTag: tag), id: .null)
+		try await invoke(method: "create_pet", params: CreatePetRequest(newPetName: name, newPetTag: tag))
 	}
 
 	func getPet(id: Int) async throws -> Pet {
-		try await invoke(method: "get_pet", params: ["petId": id], id: .null)
+		try await invoke(method: "get_pet", params: ["petId": id])
 	}
 }
 

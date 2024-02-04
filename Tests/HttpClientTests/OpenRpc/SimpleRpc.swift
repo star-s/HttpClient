@@ -24,11 +24,11 @@ struct Versions: Decodable {
 extension SimpleRpcApi where Self: JsonRpcService {
 
 	func getVersions() async throws -> Versions {
-		try await invoke(method: "get_versions", params: Parameters.voidArray, id: nil)
+		try await invoke(method: "get_versions", params: Parameters.voidArray)
 	}
 
 	func getVersionDetails() async throws -> String {
-		try await invoke(method: "get_version_details", params: Parameters.voidArray, id: nil)
+		try await invoke(method: "get_version_details", params: Parameters.voidArray)
 	}
 }
 

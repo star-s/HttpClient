@@ -10,13 +10,13 @@ import Foundation
 public protocol JsonRpcService: ApplicationLayer, ApplicationLayerWithoutReturnValue {
 	var endpoint: Path { get }
 
-	func invoke<E: Encodable, D: Decodable>(method: String, params: E, id: JsonRpcId) async throws -> D
+	func invoke<E: Encodable, D: Decodable>(method: String, params: E) async throws -> D
 	func notify<E: Encodable>(method: String, params: E) async throws
 }
 
 public extension JsonRpcService {
-	func invoke<E: Encodable, D: Decodable>(method: String, params: E, id: JsonRpcId) async throws -> D {
-		let response: JsonRpcResponce<D> = try await post(endpoint, parameters: JsonRpcRequest(method: method, params: params, id: id))
+	func invoke<E: Encodable, D: Decodable>(method: String, params: E) async throws -> D {
+		let response: JsonRpcResponce<D> = try await post(endpoint, parameters: JsonRpcRequest(method: method, params: params, id: .null))
 		return response.result
 	}
 

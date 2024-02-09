@@ -66,8 +66,9 @@ struct ITunecClient: HttpClient, ITunesApi {
 		let url: URL?
 	}
 
-	let presenter = JsonPresenter()
-	let transport = URLSession.shared.transportWithLogger()
+	let requestEncoder = JsonRequestEncoder()
+    let responseDecoder = JSONDecoder().withDefaultResponseValidator()
+	let transport = URLSession.shared.withLogger()
 
 	func makeURL(from path: Path) throws -> URL {
 		guard let url = path.url else {

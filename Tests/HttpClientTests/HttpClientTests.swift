@@ -48,8 +48,10 @@ final class HttpClientTests: XCTestCase {
 		struct Agify: AgifyApi, HttpClientWithBaseUrl {
 			typealias Path = String
 
-			let presenter = JsonPresenter()
-			let transport = URLSession.shared.transportWithLogger()
+			let requestEncoder = JsonRequestEncoder()
+            let responseDecoder = JSONDecoder().withDefaultResponseValidator()
+
+			let transport = URLSession.shared.withLogger()
 
 			let baseURL: URL = .agifyBaseURL
 		}
@@ -61,8 +63,10 @@ final class HttpClientTests: XCTestCase {
 		struct Jsonplaceholder: JsonplaceholderApi, HttpClientWithBaseUrl {
 			typealias Path = String
 
-			let presenter = JsonPresenter()
-			let transport = URLSession.shared.transportWithLogger()
+			let requestEncoder = JsonRequestEncoder()
+            let responseDecoder = JSONDecoder().withDefaultResponseValidator()
+
+			let transport = URLSession.shared.withLogger()
 
 			let baseURL: URL = .jsonplaceholderBaseURL
 		}
@@ -71,13 +75,15 @@ final class HttpClientTests: XCTestCase {
 	}
 
 	func testCustomHeaders() async throws {
+        let encoderWithDefaultHeaders = JsonRequestEncoder().withUpdatedHeaders()
 
-		let requestWithDefaultHeaders = try await JsonPresenter().prepare(get: "http://somewere.org/", parameters: Parameters.void)
+
+        let requestWithDefaultHeaders = try await encoderWithDefaultHeaders.prepare(get: "http://somewere.org/", parameters: Parameters.void)
 		XCTAssertFalse(requestWithDefaultHeaders.headers.isEmpty)
 		
-		let requestWithCustomHeader = try await JsonPresenter(
-			headersFactory: HTTPHeaders.SimpleFactory(headers: HTTPHeaders())
-		).prepare(get: "http://somewere.org/", parameters: Parameters.void)
+        let encoderWithCustomHeaders = JsonRequestEncoder().withUpdatedHeaders(HTTPHeaders.SimpleFactory(headers: HTTPHeaders()))
+
+        let requestWithCustomHeader = try await encoderWithCustomHeaders.prepare(get: "http://somewere.org/", parameters: Parameters.void)
 		XCTAssertTrue(requestWithCustomHeader.headers.isEmpty)
 	}
 

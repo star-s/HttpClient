@@ -7,21 +7,25 @@
 
 import Foundation
 
-public struct RelativePathHttpClient<P: PresentationLayer, T: TransportLayer>: HttpClientWithBaseUrl {
+public struct RelativePathHttpClient<E: RequestEncoder, D: ResponseDecoder, T: TransportLayer>: HttpClientWithBaseUrl {
 	public typealias Path = String
 
-	public let presenter: P
+	public let requestEncoder: E
+    public let responseDecoder: D
+
 	public let transport: T
 
 	public let baseURL: URL
 
 	public init(
 		baseURL: URL,
-		presenter: P = JsonPresenter(),
-		transport: T = URLSession.shared.transportWithLogger()
+        requestEncoder: E = JsonRequestEncoder().withUpdatedHeaders(),
+        responseDecoder: D = DefaultResponseDecoder().withDefaultResponseValidator(),
+		transport: T = URLSession.shared.withLogger()
 	) {
 		self.baseURL = baseURL
-		self.presenter = presenter
+		self.requestEncoder = requestEncoder
+        self.responseDecoder = responseDecoder
 		self.transport = transport
 	}
 }

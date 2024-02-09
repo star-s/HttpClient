@@ -8,7 +8,7 @@
 import Foundation
 import HttpClientUtilities
 
-public protocol OAuth2PresentationLayer: PresentationLayer {
+public protocol OAuth2PresentationLayer: RequestEncoder {
 	var headersFactory: HeadersFactory { get }
 }
 

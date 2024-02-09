@@ -7,17 +7,21 @@
 
 import Foundation
 
-public struct SampleHttpClient<P: PresentationLayer, T: TransportLayer>: HttpClient {
+public struct SampleHttpClient<E: RequestEncoder, D: ResponseDecoder, T: TransportLayer>: HttpClient {
 	public typealias Path = URL
 
-	public let presenter: P
+	public let requestEncoder: E
+    public let responseDecoder: D
+
 	public let transport: T
 
 	public init(
-		presenter: P = JsonPresenter(),
-		transport: T = URLSession.shared.transportWithLogger()
+        requestEncoder: E = JsonRequestEncoder().withUpdatedHeaders(),
+        responseDecoder: D = DefaultResponseDecoder().withDefaultResponseValidator(),
+		transport: T = URLSession.shared.withLogger()
 	) {
-		self.presenter = presenter
+		self.requestEncoder = requestEncoder
+        self.responseDecoder = responseDecoder
 		self.transport = transport
 	}
 }

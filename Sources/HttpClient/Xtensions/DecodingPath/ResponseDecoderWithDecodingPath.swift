@@ -9,14 +9,14 @@ import Foundation
 import CoreServices
 import HttpClientUtilities
 
-public protocol PresentationLayerWithDecodingPath: PresentationLayer {
+public protocol ResponseDecoderWithDecodingPath: ResponseDecoder {
 	var jsonDecoder: JSONDecoder { get }
 
 	func decode<T: Decodable>(response: (data: Data, response: URLResponse), decodingPath: [DecodingKey]?) async throws -> T
 }
 
-public extension PresentationLayerWithDecodingPath {
-	
+public extension ResponseDecoderWithDecodingPath {
+
 	func decode<T: Decodable>(response: (data: Data, response: URLResponse)) async throws -> T {
 		try await decode(response: response, decodingPath: nil)
 	}

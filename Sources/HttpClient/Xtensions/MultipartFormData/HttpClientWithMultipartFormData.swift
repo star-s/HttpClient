@@ -8,7 +8,7 @@
 import Foundation
 import HttpClientUtilities
 
-public protocol HttpClientWithMultipartFormData: HttpClient where Presenter: PresentationLayerWithMultipartFormData {
+public protocol HttpClientWithMultipartFormData: HttpClient where Encoder: RequestEncoderWithMultipartFormData {
 	func upload<T: Decodable>(_ path: Path, multipartFormData: @escaping (FormDataBuilder) -> Void) async throws -> T
 	func upload(_ path: Path, multipartFormData: @escaping (FormDataBuilder) -> Void) async throws
 }
@@ -16,15 +16,15 @@ public protocol HttpClientWithMultipartFormData: HttpClient where Presenter: Pre
 public extension HttpClientWithMultipartFormData {
 	
 	func upload<T: Decodable>(_ path: Path, multipartFormData: @escaping (FormDataBuilder) -> Void) async throws -> T {
-		let request = try await presenter.prepare(post: makeURL(from: path), multipartFormData: multipartFormData)
+		let request = try await requestEncoder.prepare(post: makeURL(from: path), multipartFormData: multipartFormData)
 		let response = try await transport.perform(request)
-		try await presenter.validate(response: response)
-		return try await presenter.decode(response: response)
+		try await responseDecoder.validate(response: response)
+		return try await responseDecoder.decode(response: response)
 	}
 
 	func upload(_ path: Path, multipartFormData: @escaping (FormDataBuilder) -> Void) async throws {
-		let request = try await presenter.prepare(post: makeURL(from: path), multipartFormData: multipartFormData)
+		let request = try await requestEncoder.prepare(post: makeURL(from: path), multipartFormData: multipartFormData)
 		let response = try await transport.perform(request)
-		try await presenter.validate(response: response)
+		try await responseDecoder.validate(response: response)
 	}
 }

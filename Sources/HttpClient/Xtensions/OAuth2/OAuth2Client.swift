@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol OAuth2Client: HttpClient where Presenter: OAuth2PresentationLayer {
+public protocol OAuth2Client: HttpClient {
 
 	var authorizationEndpoint: Path { get }
 	var tokenEndpoint: Path { get }

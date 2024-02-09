@@ -8,8 +8,8 @@
 import Foundation
 import HttpClientUtilities
 
-public protocol HttpClientWithDecodingPath: HttpClient where Presenter: PresentationLayerWithDecodingPath {
-	
+public protocol HttpClientWithDecodingPath: HttpClient where Decoder: ResponseDecoderWithDecodingPath {
+
 	func post<P: Encodable, T: Decodable>(_ path: Path, parameters: P, decodingPath: [DecodingKey]?) async throws -> T
 	func get<P: Encodable, T: Decodable>(_ path: Path, parameters: P, decodingPath: [DecodingKey]?) async throws -> T
 	func put<P: Encodable, T: Decodable>(_ path: Path, parameters: P, decodingPath: [DecodingKey]?) async throws -> T
@@ -20,38 +20,38 @@ public protocol HttpClientWithDecodingPath: HttpClient where Presenter: Presenta
 public extension HttpClientWithDecodingPath {
 	
 	func post<P: Encodable, T: Decodable>(_ path: Path, parameters: P, decodingPath: [DecodingKey]?) async throws -> T {
-		let request = try await presenter.prepare(post: makeURL(from: path), parameters: parameters)
+		let request = try await requestEncoder.prepare(post: makeURL(from: path), parameters: parameters)
 		let response = try await transport.perform(request)
-		try await presenter.validate(response: response)
-		return try await presenter.decode(response: response, decodingPath: decodingPath)
+		try await responseDecoder.validate(response: response)
+		return try await responseDecoder.decode(response: response, decodingPath: decodingPath)
 	}
 	
 	func get<P: Encodable, T: Decodable>(_ path: Path, parameters: P, decodingPath: [DecodingKey]?) async throws -> T {
-		let request = try await presenter.prepare(get: makeURL(from: path), parameters: parameters)
+		let request = try await requestEncoder.prepare(get: makeURL(from: path), parameters: parameters)
 		let response = try await transport.perform(request)
-		try await presenter.validate(response: response)
-		return try await presenter.decode(response: response, decodingPath: decodingPath)
+		try await responseDecoder.validate(response: response)
+		return try await responseDecoder.decode(response: response, decodingPath: decodingPath)
 	}
 	
 	func put<P: Encodable, T: Decodable>(_ path: Path, parameters: P, decodingPath: [DecodingKey]?) async throws -> T {
-		let request = try await presenter.prepare(put: makeURL(from: path), parameters: parameters)
+		let request = try await requestEncoder.prepare(put: makeURL(from: path), parameters: parameters)
 		let response = try await transport.perform(request)
-		try await presenter.validate(response: response)
-		return try await presenter.decode(response: response, decodingPath: decodingPath)
+		try await responseDecoder.validate(response: response)
+		return try await responseDecoder.decode(response: response, decodingPath: decodingPath)
 	}
 	
 	func patch<P: Encodable, T: Decodable>(_ path: Path, parameters: P, decodingPath: [DecodingKey]?) async throws -> T {
-		let request = try await presenter.prepare(patch: makeURL(from: path), parameters: parameters)
+		let request = try await requestEncoder.prepare(patch: makeURL(from: path), parameters: parameters)
 		let response = try await transport.perform(request)
-		try await presenter.validate(response: response)
-		return try await presenter.decode(response: response, decodingPath: decodingPath)
+		try await responseDecoder.validate(response: response)
+		return try await responseDecoder.decode(response: response, decodingPath: decodingPath)
 	}
 	
 	func delete<P: Encodable, T: Decodable>(_ path: Path, parameters: P, decodingPath: [DecodingKey]?) async throws -> T {
-		let request = try await presenter.prepare(delete: makeURL(from: path), parameters: parameters)
+		let request = try await requestEncoder.prepare(delete: makeURL(from: path), parameters: parameters)
 		let response = try await transport.perform(request)
-		try await presenter.validate(response: response)
-		return try await presenter.decode(response: response, decodingPath: decodingPath)
+		try await responseDecoder.validate(response: response)
+		return try await responseDecoder.decode(response: response, decodingPath: decodingPath)
 	}
 	
 	// MARK: -

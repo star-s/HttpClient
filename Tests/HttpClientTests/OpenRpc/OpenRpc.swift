@@ -15,14 +15,16 @@ extension URL {
 struct OpenRpc<T: TransportLayer>: HttpClientWithBaseUrl, JsonRpcService {
 	typealias Path = String
 
-	let presenter = JsonPresenter()
+	let requestEncoder = JsonRequestEncoder()
+    let responseDecoder = JSONDecoder().withDefaultResponseValidator()
 
-	var transport: T
-	var baseURL: URL
-	var endpoint: String
+	let transport: T
+
+	let baseURL: URL
+	let endpoint: String
 
 	init(
-		transport: T = URLSession.shared.transportWithLogger(),
+		transport: T = URLSession.shared.withLogger(),
 		baseURL: URL = .openRpcBaseURL,
 		endpoint: String
 	) {

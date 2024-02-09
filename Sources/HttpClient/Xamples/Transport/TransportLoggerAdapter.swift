@@ -9,7 +9,7 @@ import Foundation
 import HttpClientUtilities
 
 public extension TransportLayer {
-	func transportWithLogger(_ logger: TransportLogger = DefaultTransportLogger(sessionConfiguration: .default)) -> TransportLoggerAdapter<Self> {
+	func withLogger(_ logger: TransportLogger = DefaultTransportLogger(sessionConfiguration: .default)) -> TransportLoggerAdapter<Self> {
 		TransportLoggerAdapter(transport: self, logger: logger)
 	}
 }
@@ -18,7 +18,7 @@ public struct TransportLoggerAdapter<T: TransportLayer>: TransportLayer {
 	private let transport: T
 	private let logger: TransportLogger
 
-	public init(transport: T, logger: TransportLogger) {
+	init(transport: T, logger: TransportLogger) {
 		self.transport = transport
 		self.logger = logger
 	}

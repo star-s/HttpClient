@@ -49,7 +49,7 @@ class JsonRpcTestCase: XCTestCase {
 						throw URLError(.cannotDecodeContentData)
 				}
 			}
-		}.transportWithLogger()
+		}.withLogger()
 		return OpenRpc(transport: transport, endpoint: "/")
 	}()
 }

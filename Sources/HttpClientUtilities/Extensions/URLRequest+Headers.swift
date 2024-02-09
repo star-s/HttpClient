@@ -9,21 +9,33 @@ import Foundation
 
 public extension URLRequest {
     
+    @inlinable
     func with(method: HTTPMethod) -> URLRequest {
         var request = self
         request.httpMethod = method.rawValue
         return request
     }
     
+    @inlinable
     func with(headers: HTTPHeaders) -> URLRequest {
         var request = self
         request.headers = headers
         return request
     }
     
+    @inlinable
     func withAdded(header: HTTPHeader) -> URLRequest {
         var request = self
         request.headers.add(header)
         return request
+    }
+
+    @inlinable
+    func update(headers: HTTPHeaders) -> URLRequest {
+        var newHeaders = self.headers
+        headers.forEach {
+            newHeaders.update($0)
+        }
+        return with(headers: newHeaders)
     }
 }

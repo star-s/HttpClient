@@ -9,9 +9,12 @@ import Foundation
 
 public protocol HttpClient: ApplicationLayer {
 	
-	associatedtype Presenter: PresentationLayer
-	var presenter: Presenter { get }
-	
+	associatedtype Encoder: RequestEncoder
+	var requestEncoder: Encoder { get }
+
+	associatedtype Decoder: ResponseDecoder
+	var responseDecoder: Decoder { get }
+
 	associatedtype Transport: TransportLayer
 	var transport: Transport { get }
 	
@@ -40,37 +43,37 @@ public extension HttpClient where Path == URL {
 public extension HttpClient {
 	
 	func post<P: Encodable, T: Decodable>(_ path: Path, parameters: P) async throws -> T {
-		let request = try await presenter.prepare(post: makeURL(from: path), parameters: parameters)
+		let request = try await requestEncoder.prepare(post: makeURL(from: path), parameters: parameters)
 		let response = try await transport.perform(request)
-		try await presenter.validate(response: response)
-		return try await presenter.decode(response: response)
+		try await responseDecoder.validate(response: response)
+		return try await responseDecoder.decode(response: response)
 	}
 	
 	func get<P: Encodable, T: Decodable>(_ path: Path, parameters: P) async throws -> T {
-		let request = try await presenter.prepare(get: makeURL(from: path), parameters: parameters)
+		let request = try await requestEncoder.prepare(get: makeURL(from: path), parameters: parameters)
 		let response = try await transport.perform(request)
-		try await presenter.validate(response: response)
-		return try await presenter.decode(response: response)
+		try await responseDecoder.validate(response: response)
+		return try await responseDecoder.decode(response: response)
 	}
 	
 	func put<P: Encodable, T: Decodable>(_ path: Path, parameters: P) async throws -> T {
-		let request = try await presenter.prepare(put: makeURL(from: path), parameters: parameters)
+		let request = try await requestEncoder.prepare(put: makeURL(from: path), parameters: parameters)
 		let response = try await transport.perform(request)
-		try await presenter.validate(response: response)
-		return try await presenter.decode(response: response)
+		try await responseDecoder.validate(response: response)
+		return try await responseDecoder.decode(response: response)
 	}
 	
 	func patch<P: Encodable, T: Decodable>(_ path: Path, parameters: P) async throws -> T {
-		let request = try await presenter.prepare(patch: makeURL(from: path), parameters: parameters)
+		let request = try await requestEncoder.prepare(patch: makeURL(from: path), parameters: parameters)
 		let response = try await transport.perform(request)
-		try await presenter.validate(response: response)
-		return try await presenter.decode(response: response)
+		try await responseDecoder.validate(response: response)
+		return try await responseDecoder.decode(response: response)
 	}
 	
 	func delete<P: Encodable, T: Decodable>(_ path: Path, parameters: P) async throws -> T {
-		let request = try await presenter.prepare(delete: makeURL(from: path), parameters: parameters)
+		let request = try await requestEncoder.prepare(delete: makeURL(from: path), parameters: parameters)
 		let response = try await transport.perform(request)
-		try await presenter.validate(response: response)
-		return try await presenter.decode(response: response)
+		try await responseDecoder.validate(response: response)
+		return try await responseDecoder.decode(response: response)
 	}
 }

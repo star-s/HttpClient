@@ -70,7 +70,7 @@ private extension URLRequest {
 		let result = try handler(request.params)
 
 		let responseData = try TaggedData.jsonEncoded(
-			JsonRpcResponce(result: result, id: request.id ?? .null)
+            JsonRpcResponse(result: result, id: request.id ?? .null)
 		)
 		let response = HTTPURLResponse(
 			url: url,
@@ -80,4 +80,19 @@ private extension URLRequest {
 		)
 		return (data: responseData.data, response: response)
 	}
+}
+
+extension JsonRpcResponse: Encodable where T: Encodable {
+    private enum CodingKeys: String, CodingKey {
+        case jsonrpc
+        case result
+        case id
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(jsonrpc, forKey: .jsonrpc)
+        try container.encode(result.get(), forKey: .result)
+        try container.encode(id, forKey: .id)
+    }
 }

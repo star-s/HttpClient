@@ -15,8 +15,8 @@ extension URL {
 struct OpenRpc<T: TransportLayer>: HttpClientWithBaseUrl, JsonRpcService {
 	typealias Path = String
 
-	let requestEncoder = JsonRequestEncoder()
-    let responseDecoder = JSONDecoder().withDefaultResponseValidator()
+	let requestEncoder = JsonRpcRequestEncoder()
+    let responseDecoder = JsonRpcResponseDecoder().withDefaultResponseValidator()
 
 	let transport: T
 

@@ -16,15 +16,14 @@ public protocol JsonRpcService: ApplicationLayer, ApplicationLayerWithoutReturnV
 
 public extension JsonRpcService {
 	func invoke<E: Encodable, D: Decodable>(method: String, params: E) async throws -> D {
-		let response: JsonRpcResponce<D> = try await post(endpoint, parameters: JsonRpcRequest(method: method, params: params, id: .null))
-		return response.result
+		try await post(endpoint, parameters: JsonRpcRequest(method: method, params: params, id: .null))
 	}
 
 	func notify<E: Encodable>(method: String, params: E) async throws {
 		try await post(endpoint, parameters: JsonRpcRequest(method: method, params: params))
 	}
 
-	func performBatch(requests: [JsonRpcRequest]) async throws -> JsonRpcBatchResponse {
+	/*func performBatch(requests: [JsonRpcRequest]) async throws -> JsonRpcBatchResponse {
 		try await post(endpoint, parameters: requests)
-	}
+	}*/
 }

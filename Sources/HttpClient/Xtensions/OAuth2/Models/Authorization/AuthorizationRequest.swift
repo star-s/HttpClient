@@ -16,14 +16,12 @@ struct AuthorizationRequest: Encodable {
 	private enum CodingKeys: String, CodingKey {
 		case type = "response_type"
 		case clientID = "client_id"
+        case redirectURL = "redirect_uri"
 		case scope
-		case state
-		case redirectURL = "redirect_uri"
 	}
 
 	let type: ResponseType
 	let clientID: String
+    let redirectURL: URL?
 	let scope: String?
-	let state: String?
-	let redirectURL: URL?
 }

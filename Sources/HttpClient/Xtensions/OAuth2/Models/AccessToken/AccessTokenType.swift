@@ -8,7 +8,7 @@
 import Foundation
 
 /// https://www.rfc-editor.org/rfc/rfc6749#section-7.1
-public struct AccessTokenType: RawRepresentable, ExpressibleByStringLiteral, Hashable, Decodable {
+public struct AccessTokenType: RawRepresentable, ExpressibleByStringLiteral, Hashable, Codable {
 	public let rawValue: String
 
 	public init(rawValue: String) {

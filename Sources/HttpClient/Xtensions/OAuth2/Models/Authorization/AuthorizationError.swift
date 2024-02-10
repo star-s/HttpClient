@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// https://www.rfc-editor.org/rfc/rfc6749#section-4.2.2.1
 public struct AuthorizationError: Error, Decodable {
 	public enum ErrorType: String, Decodable {
 		case invalidRequest = "invalid_request"
@@ -22,11 +23,9 @@ public struct AuthorizationError: Error, Decodable {
 		case error
 		case errorDescription = "error_description"
 		case errorURI = "error_uri"
-		case state
 	}
 
 	public let error: ErrorType
 	public let errorDescription: String?
 	public let errorURI: URL?
-	public let state: String?
 }

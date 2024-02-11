@@ -25,21 +25,25 @@ public extension OAuth2Client {
         return try await withCheckedThrowingContinuation { continuation in
             let session = ASWebAuthenticationSession(url: url, callbackURLScheme: self.redirectURL.scheme) { url, error in
                 Task {
-                    if let error = error {
-                        throw error
-                    }
-                    guard let url = url else {
-                        throw OAuth2ClientError.wrongRedirectURL
-                    }
-                    let token: T
-                    switch responseType {
+                    do {
+                        if let error = error {
+                            throw error
+                        }
+                        guard let url = url else {
+                            throw OAuth2ClientError.wrongRedirectURL
+                        }
+                        let token: T
+                        switch responseType {
                         case .code:
                             let response = try self.decodeAuthorizationCode(redirect: url, state: state)
                             token = try await self.accessToken(response.code)
                         case .token:
                             token = try self.decodeAccessToken(redirect: url, state: state)
+                        }
+                        continuation.resume(returning: token)
+                    } catch {
+                        continuation.resume(throwing: error)
                     }
-                    continuation.resume(returning: token)
                 }
             }
             session.presentationContextProvider = presentationContextProvider

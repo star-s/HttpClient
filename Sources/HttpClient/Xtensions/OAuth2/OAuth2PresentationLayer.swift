@@ -22,9 +22,9 @@ public struct OAuth2ResponseDecoder<D: TopLevelDecoder>: ResponseDecoder where D
             return
         }
         switch httpResponse.statusCode {
-        case 200:
+        case 200...299:
             return
-        case 400:
+        case 400...499:
             throw try decoder.decode(AccessTokenError.self, from: response.data)
         default:
             throw httpResponse

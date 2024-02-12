@@ -7,12 +7,12 @@
 
 import Foundation
 
-public enum ResponseType: String, Encodable {
-	case code
-	case token
-}
-
 struct AuthorizationRequest: Encodable {
+    enum ResponseType: String, Encodable {
+        case code
+        case token
+    }
+
 	private enum CodingKeys: String, CodingKey {
 		case type = "response_type"
 		case clientID = "client_id"

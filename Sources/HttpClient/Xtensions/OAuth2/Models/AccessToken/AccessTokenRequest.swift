@@ -7,10 +7,10 @@
 
 import Foundation
 
-enum AccessTokenRequest {
+public enum AccessTokenRequest {
 	case authorizationCode(String, clientID: String, redirectURI: URL)
 	case refreshToken(String, scope: String?)
-	case clientCredentials(scope: String?)
+	case clientCredentials(clientID: String, clientSecret: String, scope: String?)
 	case password(username: String, password: String, scope: String?)
 }
 
@@ -42,6 +42,7 @@ extension AccessTokenRequest: Encodable {
 
 		case code
 		case client_id
+        case client_secret
 		case redirect_uri
 
 		case scope
@@ -53,7 +54,7 @@ extension AccessTokenRequest: Encodable {
 
 	}
 
-	func encode(to encoder: Encoder) throws {
+	public func encode(to encoder: Encoder) throws {
 		var container = encoder.container(keyedBy: CodingKeys.self)
 		switch self {
 		case .authorizationCode(let code, let clientID, let redirectURI):
@@ -63,7 +64,9 @@ extension AccessTokenRequest: Encodable {
 		case .refreshToken(let token, let scope):
 			try container.encode(token, forKey: .refresh_token)
 			try container.encodeIfPresent(scope, forKey: .scope)
-		case .clientCredentials(let scope):
+		case .clientCredentials(let clientID, let secret, let scope):
+            try container.encode(clientID, forKey: .client_id)
+            try container.encode(secret, forKey: .client_secret)
 			try container.encodeIfPresent(scope, forKey: .scope)
 		case .password(let username, let password, let scope):
 			try container.encode(username, forKey: .username)
@@ -72,4 +75,10 @@ extension AccessTokenRequest: Encodable {
 		}
 		try container.encode(grantType, forKey: .grant_type)
 	}
+}
+
+public extension AccessTokenRequest {
+    func withAdditionalParameters<T: Encodable>(_ parameters: T) -> some Encodable {
+        RequestWithAdditionalParameters(self, parameters)
+    }
 }

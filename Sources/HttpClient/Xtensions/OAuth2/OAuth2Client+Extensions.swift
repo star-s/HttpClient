@@ -8,61 +8,49 @@
 import Foundation
 import HttpClientUtilities
 import URLEncodedForm
-
 #if os(macOS) || os(iOS)
 import AuthenticationServices
 
 public extension OAuth2Client {
     @MainActor
     func startWebAuthenticationSession<T: AccessToken>(
-        _ returnType: T.Type = T.self,
-        responseType: ResponseType,
+        _ responseType: T.Type = T.self,
+        flow: Flow,
         presentationContextProvider: ASWebAuthenticationPresentationContextProviding,
         ephemeralWebBrowser: Bool = true,
         state: String? = nil
     ) async throws -> T {
-        let url = try prepareAuthorizationURL(responseType: responseType, state: state)
-        return try await withCheckedThrowingContinuation { continuation in
-            let session = ASWebAuthenticationSession(url: url, callbackURLScheme: self.redirectURL.scheme) { url, error in
-                Task {
-                    do {
-                        if let error = error {
-                            throw error
-                        }
-                        guard let url = url else {
-                            throw OAuth2ClientError.wrongRedirectURL
-                        }
-                        let token: T
-                        switch responseType {
-                        case .code:
-                            let response = try self.decodeAuthorizationCode(redirect: url, state: state)
-                            token = try await self.accessToken(response.code)
-                        case .token:
-                            token = try self.decodeAccessToken(redirect: url, state: state)
-                        }
-                        continuation.resume(returning: token)
-                    } catch {
-                        continuation.resume(throwing: error)
-                    }
-                }
-            }
-            session.presentationContextProvider = presentationContextProvider
-            session.prefersEphemeralWebBrowserSession = ephemeralWebBrowser
-            session.start()
+        let redirectURL = try await ASWebAuthenticationSession.start(
+            with: prepareAuthorizationURL(flow: flow, state: state),
+            callbackURL: callbackURL,
+            presentationContextProvider: presentationContextProvider,
+            ephemeralWebBrowser: ephemeralWebBrowser
+        )
+        switch flow {
+        case .authorizationCode:
+            let response = try self.decodeAuthorizationCode(redirect: redirectURL, state: state)
+            return try await self.accessToken(code: response.code)
+        case .implicit:
+            return try self.decodeAccessToken(redirect: redirectURL, state: state)
         }
     }
 }
 #endif
 
+public enum Flow {
+    case implicit
+    case authorizationCode
+}
+
 public extension OAuth2Client {
 
     // MARK: Prepare URL
 
-    func prepareAuthorizationURL(responseType: ResponseType, state: String?) throws -> URL {
+    func prepareAuthorizationURL(flow: Flow, state: String?) throws -> URL {
         let request = AuthorizationRequest(
-            type: responseType,
+            type: flow.responseType,
             clientID: clientID,
-            redirectURL: redirectURL,
+            redirectURL: callbackURL,
             scope: scope
         )
         let encoder = URLQueryEncoder(arrayEncoding: .noBrackets)
@@ -115,29 +103,40 @@ public extension OAuth2Client {
 
     // MARK: Obtain access token
 
-    func accessToken<T: AccessToken>(_ code: String) async throws -> T {
+    func accessToken<T: AccessToken, P: Encodable>(code: String, _ params: P = Parameters.void) async throws -> T {
         let request = AccessTokenRequest.authorizationCode(
             code,
             clientID: clientID,
-            redirectURI: redirectURL
+            redirectURI: callbackURL
         )
-        return try await post(tokenEndpoint, parameters: request)
+        return try await post(tokenEndpoint, parameters: request.withAdditionalParameters(params))
     }
 
-    func accessTokenWithClientCredentials<T: AccessToken>() async throws -> T {
-        let request = AccessTokenRequest.clientCredentials(scope: scope)
-        return try await post(tokenEndpoint, parameters: request)
+    func accessToken<T: AccessToken, P: Encodable>(secret: String, _ params: P = Parameters.void) async throws -> T {
+        let request = AccessTokenRequest.clientCredentials(clientID: clientID, clientSecret: secret, scope: scope)
+        return try await post(tokenEndpoint, parameters: request.withAdditionalParameters(params))
     }
 
-    func accessTokenWithPassword<T: AccessToken>(username: String, password: String) async throws -> T {
+    func accessToken<T: AccessToken, P: Encodable>(username: String, password: String, _ params: P = Parameters.void) async throws -> T {
         let request = AccessTokenRequest.password(username: username, password: password, scope: scope)
-        return try await post(tokenEndpoint, parameters: request)
+        return try await post(tokenEndpoint, parameters: request.withAdditionalParameters(params))
     }
 
     // MARK: Refresh acces token
 
-    func refreshToken<T: AccessToken>(_ refreshToken: String) async throws -> T {
+    func refreshToken<T: AccessToken, P: Encodable>(_ refreshToken: String, _ params: P = Parameters.void) async throws -> T {
         let request = AccessTokenRequest.refreshToken(refreshToken, scope: scope)
-        return try await post(tokenEndpoint, parameters: request)
+        return try await post(tokenEndpoint, parameters: request.withAdditionalParameters(params))
+    }
+}
+
+private extension Flow {
+    var responseType: AuthorizationRequest.ResponseType {
+        switch self {
+            case .implicit:
+                return .token
+            case .authorizationCode:
+                return .code
+        }
     }
 }

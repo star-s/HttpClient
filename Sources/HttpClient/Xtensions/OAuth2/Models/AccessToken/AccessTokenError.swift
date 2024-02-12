@@ -21,6 +21,12 @@ public struct AccessTokenError: Error, Decodable {
 		case unauthorizedClient = "unauthorized_client"
 		case unsupportedGrantType = "unsupported_grant_type"
 		case invalidScope = "invalid_scope"
+
+        // https://www.rfc-editor.org/rfc/rfc6749#section-4.2.2.1
+        case accessDenied = "access_denied"
+        case unsupportedResponseType = "unsupported_response_type"
+        case serverError = "server_error"
+        case temporarilyUnavailable = "temporarily_unavailable"
 	}
 
 	private enum CodingKeys: String, CodingKey {

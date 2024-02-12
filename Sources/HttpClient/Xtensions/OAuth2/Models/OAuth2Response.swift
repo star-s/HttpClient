@@ -7,11 +7,11 @@
 
 import Foundation
 
-struct OAuth2Response<T, E: Error> {
-    let result: Result<T, E>
+struct OAuth2Response<T> {
+    let result: Result<T, AccessTokenError>
 }
 
-extension OAuth2Response: Decodable where T: Decodable, E: Decodable {
+extension OAuth2Response: Decodable where T: Decodable {
 
     private enum CodingKeys: String, CodingKey {
         case error
@@ -19,7 +19,7 @@ extension OAuth2Response: Decodable where T: Decodable, E: Decodable {
 
     init(from decoder: Decoder) throws {
         result = try decoder.container(keyedBy: CodingKeys.self).contains(.error) ?
-            .failure(E.init(from: decoder)) :
+            .failure(AccessTokenError(from: decoder)) :
             .success(T.init(from: decoder))
     }
 }

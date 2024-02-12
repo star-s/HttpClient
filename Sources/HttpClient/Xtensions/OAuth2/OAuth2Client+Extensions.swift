@@ -75,9 +75,9 @@ public extension OAuth2Client {
         let decoder = URLEncodedFormDecoder()
 
         guard let state else {
-            return try decoder.decode(OAuth2Response<AuthorizationCode, AuthorizationError>.self, from: query).result.get()
+            return try decoder.decode(OAuth2Response<AuthorizationCode>.self, from: query).result.get()
         }
-        let response = try decoder.decode(StateWrapper<OAuth2Response<AuthorizationCode, AuthorizationError>>.self, from: query)
+        let response = try decoder.decode(StateWrapper<OAuth2Response<AuthorizationCode>>.self, from: query)
         guard response.state == state else {
             throw OAuth2ClientError.stateMismatch
         }
@@ -92,9 +92,9 @@ public extension OAuth2Client {
         }
         let decoder = URLEncodedFormDecoder()
         guard let state else {
-            return try decoder.decode(OAuth2Response<T, AuthorizationError >.self, from: fragment).result.get()
+            return try decoder.decode(OAuth2Response<T>.self, from: fragment).result.get()
         }
-        let response = try decoder.decode(StateWrapper<OAuth2Response<T, AuthorizationError>>.self, from: fragment)
+        let response = try decoder.decode(StateWrapper<OAuth2Response<T>>.self, from: fragment)
         guard response.state == state else {
             throw OAuth2ClientError.stateMismatch
         }

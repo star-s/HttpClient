@@ -32,6 +32,6 @@ public struct OAuth2ResponseDecoder<D: TopLevelDecoder>: ResponseDecoder where D
     }
 
     public func decode<T: Decodable>(response: (data: Data, response: URLResponse)) async throws -> T {
-        try decoder.decode(OAuth2Response<T, AccessTokenError>.self, from: response.data).result.get()
+        try decoder.decode(OAuth2Response<T>.self, from: response.data).result.get()
     }
 }

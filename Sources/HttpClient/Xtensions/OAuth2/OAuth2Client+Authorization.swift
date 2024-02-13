@@ -8,34 +8,6 @@
 import Foundation
 import HttpClientUtilities
 import URLEncodedForm
-#if os(macOS) || os(iOS)
-import AuthenticationServices
-
-public extension OAuth2Client {
-    @MainActor
-    func startWebAuthenticationSession<T: AccessToken>(
-        _ responseType: T.Type = T.self,
-        flow: Flow,
-        presentationContextProvider: ASWebAuthenticationPresentationContextProviding,
-        ephemeralWebBrowser: Bool = true,
-        state: String? = nil
-    ) async throws -> T {
-        let redirectURL = try await ASWebAuthenticationSession.start(
-            with: prepareAuthorizationURL(flow: flow, state: state),
-            callbackURL: callbackURL,
-            presentationContextProvider: presentationContextProvider,
-            ephemeralWebBrowser: ephemeralWebBrowser
-        )
-        switch flow {
-        case .authorizationCode:
-            let response = try self.decodeAuthorizationCode(redirect: redirectURL, state: state)
-            return try await self.accessToken(code: response.code)
-        case .implicit:
-            return try self.decodeAccessToken(redirect: redirectURL, state: state)
-        }
-    }
-}
-#endif
 
 public enum Flow {
     case implicit
@@ -99,34 +71,6 @@ public extension OAuth2Client {
             throw OAuth2ClientError.stateMismatch
         }
         return try response.value.result.get()
-    }
-
-    // MARK: Obtain access token
-
-    func accessToken<T: AccessToken, P: Encodable>(code: String, _ params: P = Parameters.void) async throws -> T {
-        let request = AccessTokenRequest.authorizationCode(
-            code,
-            clientID: clientID,
-            redirectURI: callbackURL
-        )
-        return try await post(tokenEndpoint, parameters: request.withAdditionalParameters(params))
-    }
-
-    func accessToken<T: AccessToken, P: Encodable>(secret: String, _ params: P = Parameters.void) async throws -> T {
-        let request = AccessTokenRequest.clientCredentials(clientID: clientID, clientSecret: secret, scope: scope)
-        return try await post(tokenEndpoint, parameters: request.withAdditionalParameters(params))
-    }
-
-    func accessToken<T: AccessToken, P: Encodable>(username: String, password: String, _ params: P = Parameters.void) async throws -> T {
-        let request = AccessTokenRequest.password(username: username, password: password, scope: scope)
-        return try await post(tokenEndpoint, parameters: request.withAdditionalParameters(params))
-    }
-
-    // MARK: Refresh acces token
-
-    func refreshToken<T: AccessToken, P: Encodable>(_ refreshToken: String, _ params: P = Parameters.void) async throws -> T {
-        let request = AccessTokenRequest.refreshToken(refreshToken, scope: scope)
-        return try await post(tokenEndpoint, parameters: request.withAdditionalParameters(params))
     }
 }
 

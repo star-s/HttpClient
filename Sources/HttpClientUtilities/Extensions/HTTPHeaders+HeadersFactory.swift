@@ -12,17 +12,21 @@ public protocol HeadersFactory {
 }
 
 extension HTTPHeaders {
-	public struct SimpleFactory: HeadersFactory {
-		private let headers: HTTPHeaders
+	public struct Factory: HeadersFactory {
+		private let headers: () throws -> HTTPHeaders
 
-		public init(headers: HTTPHeaders) {
+        public init(_ headers: @escaping () throws -> HTTPHeaders) {
 			self.headers = headers
 		}
 
 		public func makeHeaders(for url: URL, method: HTTPMethod) async throws -> HTTPHeaders {
-			headers
+			try headers()
 		}
 	}
+}
 
-	public static let defaultFactory: HeadersFactory = SimpleFactory(headers: .default)
+extension HTTPHeaders: HeadersFactory {
+    public func makeHeaders(for url: URL, method: HTTPMethod) async throws -> HTTPHeaders {
+        self
+    }
 }

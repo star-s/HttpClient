@@ -9,7 +9,7 @@ import Foundation
 import HttpClientUtilities
 
 public extension RequestEncoder {
-    func withUpdatedHeaders(_ headersFactory: HeadersFactory = HTTPHeaders.defaultFactory) -> HeadersFactoryAdapter<Self> {
+    func withUpdatedHeaders(_ headersFactory: HeadersFactory = HTTPHeaders.default) -> HeadersFactoryAdapter<Self> {
         HeadersFactoryAdapter(requestEncoder: self, headersFactory: headersFactory)
     }
 }

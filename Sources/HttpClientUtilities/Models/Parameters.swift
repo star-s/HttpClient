@@ -16,8 +16,7 @@ public enum Parameters: Encodable {
 		var container = encoder.singleValueContainer()
 		switch self {
 			case .void:
-				struct Void: Encodable {}
-				try container.encode(Void())
+                try container.encode([String:String]())
 			case .voidArray:
 				try container.encode([String]())
 			case .null:

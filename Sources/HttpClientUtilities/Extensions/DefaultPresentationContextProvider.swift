@@ -5,27 +5,25 @@
 //  Created by Sergey Starukhin on 12.02.2024.
 //
 
-#if os(iOS)
+#if canImport(AuthenticationServices)
 import AuthenticationServices
 
-extension UIApplication: ASWebAuthenticationPresentationContextProviding {
+final public class DefaultPresentationContextProvider: NSObject {
     public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        connectedScenes
+        #if os(iOS)
+        return UIApplication
+            .shared
+            .connectedScenes
             .filter({ $0.activationState == .foregroundActive })
             .compactMap({ $0 as? UIWindowScene })
             .first?
             .windows
             .first(where: { $0.isKeyWindow }) ?? ASPresentationAnchor()
-    }
-}
-#endif
-
-#if os(macOS)
-import AuthenticationServices
-
-extension NSApplication: ASWebAuthenticationPresentationContextProviding {
-    public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        keyWindow ?? ASPresentationAnchor()
+        #elseif os(macOS)
+        return NSApplication
+            .shared
+            .keyWindow ?? ASPresentationAnchor()
+        #endif
     }
 }
 #endif

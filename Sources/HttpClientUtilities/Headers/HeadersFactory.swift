@@ -12,17 +12,23 @@ public protocol HeadersFactory {
 }
 
 extension HTTPHeaders {
-	public struct Factory: HeadersFactory {
-		private let headers: () throws -> HTTPHeaders
+	private struct Factory: HeadersFactory {
+		private let headers: () async throws -> HTTPHeaders
 
-        public init(_ headers: @escaping () throws -> HTTPHeaders) {
+        public init(_ headers: @escaping () async throws -> HTTPHeaders) {
 			self.headers = headers
 		}
 
 		public func makeHeaders(for url: URL, method: HTTPMethod) async throws -> HTTPHeaders {
-			try headers()
+            try await headers()
 		}
 	}
+
+    public func factory(with authorizer: HeadersAuthorizer) -> HeadersFactory {
+        Factory {
+            try await authorizer.authorize(headers: self)
+        }
+    }
 }
 
 extension HTTPHeaders: HeadersFactory {

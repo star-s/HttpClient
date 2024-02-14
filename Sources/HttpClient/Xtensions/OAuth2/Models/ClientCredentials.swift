@@ -25,8 +25,8 @@ extension ClientCredentials: Codable {
     }
 }
 
-extension ClientCredentials: HeaderAuthorizer {
-    public func authorize(headers: HTTPHeaders) throws -> HTTPHeaders {
+extension ClientCredentials: HeadersAuthorizer {
+    public func authorize(headers: HTTPHeaders) async throws -> HTTPHeaders {
         var headers = headers
         headers.add(.authorization(username: clientId, password: clientSecret))
         return headers

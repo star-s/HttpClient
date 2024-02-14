@@ -8,12 +8,8 @@
 import Foundation
 import HttpClientUtilities
 
-public protocol HeaderAuthorizer {
-    func authorize(headers: HTTPHeaders) throws -> HTTPHeaders
-}
-
-public extension HeaderAuthorizer where Self: AccessToken {
-    func authorize(headers: HTTPHeaders) throws -> HTTPHeaders {
+public extension HeadersAuthorizer where Self: AccessToken {
+    func authorize(headers: HTTPHeaders) async throws -> HTTPHeaders {
         guard tokenType == .bearer else {
             return headers
         }

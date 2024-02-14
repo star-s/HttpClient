@@ -8,7 +8,7 @@
 #if canImport(AuthenticationServices)
 import AuthenticationServices
 
-final public class DefaultPresentationContextProvider: NSObject {
+final public class DefaultPresentationContextProvider: NSObject, ASWebAuthenticationPresentationContextProviding {
     public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
         #if os(iOS)
         return UIApplication

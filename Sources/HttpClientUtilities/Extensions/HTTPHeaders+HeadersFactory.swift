@@ -26,6 +26,7 @@ extension HTTPHeaders {
 }
 
 extension HTTPHeaders: HeadersFactory {
+    @inlinable
     public func makeHeaders(for url: URL, method: HTTPMethod) async throws -> HTTPHeaders {
         self
     }

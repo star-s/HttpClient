@@ -75,13 +75,13 @@ final class HttpClientTests: XCTestCase {
 	}
 
 	func testCustomHeaders() async throws {
-        let encoderWithDefaultHeaders = JsonRequestEncoder().withUpdatedHeaders()
+        let encoderWithDefaultHeaders = JsonRequestEncoder()
 
 
         let requestWithDefaultHeaders = try await encoderWithDefaultHeaders.prepare(get: "http://somewhere.org/", parameters: Parameters.void)
 		XCTAssertFalse(requestWithDefaultHeaders.headers.isEmpty)
 		
-        let encoderWithCustomHeaders = JsonRequestEncoder().withUpdatedHeaders(HTTPHeaders())
+        let encoderWithCustomHeaders = JsonRequestEncoder(headersFactory: HTTPHeaders())
 
         let requestWithCustomHeader = try await encoderWithCustomHeaders.prepare(get: "http://somewhere.org/", parameters: Parameters.void)
 		XCTAssertTrue(requestWithCustomHeader.headers.isEmpty)

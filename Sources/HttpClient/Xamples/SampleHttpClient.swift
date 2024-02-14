@@ -16,7 +16,7 @@ public struct SampleHttpClient<E: RequestEncoder, D: ResponseDecoder, T: Transpo
 	public let transport: T
 
 	public init(
-        requestEncoder: E = JsonRequestEncoder().withUpdatedHeaders(),
+        requestEncoder: E = JsonRequestEncoder(),
         responseDecoder: D = DefaultResponseDecoder().withDefaultResponseValidator(),
 		transport: T = URLSession.shared.withLogger()
 	) {

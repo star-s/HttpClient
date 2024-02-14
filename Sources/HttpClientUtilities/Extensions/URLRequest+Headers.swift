@@ -29,13 +29,4 @@ public extension URLRequest {
         request.headers.add(header)
         return request
     }
-
-    @inlinable
-    func update(headers: HTTPHeaders) -> URLRequest {
-        var newHeaders = self.headers
-        headers.forEach {
-            newHeaders.update($0)
-        }
-        return with(headers: newHeaders)
-    }
 }

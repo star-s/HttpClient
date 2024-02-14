@@ -20,3 +20,14 @@ public extension RequestEncoderWithMultipartFormData {
 		return try URLRequest(url: url).with(method: .post).with(body: formData)
 	}
 }
+
+public extension RequestEncoderWithMultipartFormData where Self: CustomizableRequestEncoder {
+    func prepare(post url: URL, multipartFormData: @escaping (FormDataBuilder) -> Void) async throws -> URLRequest {
+        let formData = MultipartFormData()
+        multipartFormData(formData)
+        return try await URLRequest(url: url)
+            .with(method: .post)
+            .with(headers: headersFactory.makeHeaders(for: url, method: .post))
+            .with(body: formData)
+    }
+}

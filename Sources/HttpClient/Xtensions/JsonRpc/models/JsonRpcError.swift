@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct JsonRpcError: Error {
+public struct JsonRpcError {
 	public let code: Int
 	public let message: String
 

@@ -13,7 +13,7 @@ import Foundation
 /// The authorization server responds with an HTTP 400 (Bad Request)
 /// status code (unless specified otherwise) and includes the following
 /// parameters with the response:
-public struct AccessTokenError: Error, Decodable {
+public struct AccessTokenError: LocalizedError, Decodable {
 	public enum ErrorType: String, Decodable {
 		case invalidRequest = "invalid_request"
 		case invalidClient = "invalid_client"

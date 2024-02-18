@@ -23,6 +23,8 @@ final public class DefaultPresentationContextProvider: NSObject, ASWebAuthentica
         return NSApplication
             .shared
             .keyWindow ?? ASPresentationAnchor()
+        #else
+        return ASPresentationAnchor()
         #endif
     }
 }

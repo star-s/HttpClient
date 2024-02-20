@@ -11,7 +11,7 @@ import HttpClient
 final class ITunesApiTests: XCTestCase {
 
 	func testSearchWithDefaultClient() async throws {
-		let client = HTTPClientWithBaseUrl(baseURL: .iTunesBaseURL)
+		let client = HTTPClientWithBaseURL(baseURL: .iTunesBaseURL)
 		let result = try await client.search("карта")
 		XCTAssertFalse(result.results.isEmpty)
 	}

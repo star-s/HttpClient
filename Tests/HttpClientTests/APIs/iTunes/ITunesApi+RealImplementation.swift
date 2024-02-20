@@ -8,7 +8,7 @@
 import Foundation
 import HttpClient
 
-extension HTTPClientWithBaseUrl: ITunesApi {}
+extension HTTPClientWithBaseURL: ITunesApi {}
 
 struct ITunesClient: HttpClient, ITunesApi {
 	struct Path {

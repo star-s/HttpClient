@@ -20,7 +20,7 @@ public struct RelativePathHttpClient<E: RequestEncoder, D: ResponseDecoder, T: T
 	public init(
 		baseURL: URL,
         requestEncoder: E = JsonRequestEncoder(),
-        responseDecoder: D = DefaultResponseDecoder().withDefaultResponseValidator(),
+        responseDecoder: D = DefaultResponseDecoder(),
 		transport: T = URLSession.shared.withLogger()
 	) {
 		self.baseURL = baseURL

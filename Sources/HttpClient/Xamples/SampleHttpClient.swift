@@ -17,7 +17,7 @@ public struct SampleHttpClient<E: RequestEncoder, D: ResponseDecoder, T: Transpo
 
 	public init(
         requestEncoder: E = JsonRequestEncoder(),
-        responseDecoder: D = DefaultResponseDecoder().withDefaultResponseValidator(),
+        responseDecoder: D = DefaultResponseDecoder(),
 		transport: T = URLSession.shared.withLogger()
 	) {
 		self.requestEncoder = requestEncoder

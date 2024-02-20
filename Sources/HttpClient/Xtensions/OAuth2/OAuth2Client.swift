@@ -9,12 +9,12 @@ import Foundation
 
 public protocol OAuth2Client: HttpClient {
 
-    var authorizationEndpoint: Path { get }
-    var tokenEndpoint: Path { get }
+    var clientID: String { get }
 
     var callbackURL: URL { get }
 
-    var clientID: String { get }
+    var authorizationEndpoint: Path { get }
+    var tokenEndpoint: Path { get }
 
     var scope: String { get }
 }

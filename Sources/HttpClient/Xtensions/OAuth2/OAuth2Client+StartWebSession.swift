@@ -27,10 +27,10 @@ public extension OAuth2Client {
         )
         switch flow {
         case .authorizationCode:
-            let response = try self.decodeAuthorizationCode(redirect: redirectURL, state: state)
-            return try await self.accessToken(code: response.code)
+            let response = try decodeAuthorizationCode(redirect: redirectURL, state: state)
+            return try await accessToken(code: response.code)
         case .implicit:
-            return try self.decodeAccessToken(redirect: redirectURL, state: state)
+            return try decodeAccessToken(redirect: redirectURL, state: state)
         }
     }
 }

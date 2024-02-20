@@ -6,7 +6,7 @@ import HttpClientUtilities
 final class HttpClientTests: XCTestCase {
 
     func testLoadYandexWebPage() async throws {
-		let html: String = try await SampleHttpClient().get("http://ya.ru", parameters: Parameters.void)
+		let html: String = try await HTTPClient().get("http://ya.ru", parameters: Parameters.void)
 		XCTAssertFalse(html.isEmpty)
     }
 
@@ -95,7 +95,7 @@ final class HttpClientTests: XCTestCase {
 			return XCTFail("Can't create url")
 		}
 		XCTAssertTrue(url.isDataURL)
-		let output: String = try await SampleHttpClient().get(url, parameters: Parameters.void)
+		let output: String = try await HTTPClient().get(url, parameters: Parameters.void)
 		XCTAssertEqual(input, output)
 	}
 
@@ -110,7 +110,7 @@ final class HttpClientTests: XCTestCase {
 			return XCTFail("Can't create url")
 		}
 		XCTAssertTrue(url.isDataURL)
-		let output: TestData = try await SampleHttpClient().get(url, parameters: Parameters.void)
+		let output: TestData = try await HTTPClient().get(url, parameters: Parameters.void)
 		XCTAssertEqual(input, output)
 	}
 
@@ -146,7 +146,7 @@ import PDFKit
 extension HttpClientTests {
 	func testLoadPDF() async throws {
 		let document = try await PDFDocument(
-			data: SampleHttpClient().get("https://www.rfc-editor.org/rfc/pdfrfc/rfc2045.txt.pdf", parameters: Parameters.void)
+			data: HTTPClient().get("https://www.rfc-editor.org/rfc/pdfrfc/rfc2045.txt.pdf", parameters: Parameters.void)
 		)
 		XCTAssertNotNil(document)
 	}

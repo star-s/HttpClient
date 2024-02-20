@@ -59,7 +59,7 @@ public extension ITunesApi where Self: ApplicationLayer, Path: ExpressibleByStri
 
 // MARK: - Real implementation
 
-extension RelativePathHttpClient: ITunesApi {}
+extension HTTPClientWithBaseUrl: ITunesApi {}
 
 struct ITunecClient: HttpClient, ITunesApi {
 	struct Path {
@@ -89,7 +89,7 @@ extension ITunecClient.Path: ExpressibleByStringLiteral {
 final class ITunesApiTests: XCTestCase {
 
 	func testSearchWithDefaultClient() async throws {
-		let client = RelativePathHttpClient(baseURL: .iTunesBaseURL)
+		let client = HTTPClientWithBaseUrl(baseURL: .iTunesBaseURL)
 		let result = try await client.search("карта")
 		XCTAssertFalse(result.results.isEmpty)
 	}

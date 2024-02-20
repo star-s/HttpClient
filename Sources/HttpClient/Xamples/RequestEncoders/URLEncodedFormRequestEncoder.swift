@@ -9,7 +9,7 @@ import Foundation
 import HttpClientUtilities
 import URLEncodedForm
 
-public struct URLEncodedFormRequestEncoder: CustomizableRequestEncoder {
+public struct URLEncodedFormRequestEncoder: CustomRequestEncoder {
     public let headersFactory: HeadersFactory
     public let queryEncoder: URLQueryEncoder
     public let bodyEncoder: URLEncodedFormEncoder

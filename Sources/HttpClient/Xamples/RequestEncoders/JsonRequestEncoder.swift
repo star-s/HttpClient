@@ -8,7 +8,7 @@
 import Foundation
 import HttpClientUtilities
 
-public struct JsonRequestEncoder: CustomizableRequestEncoder {
+public struct JsonRequestEncoder: CustomRequestEncoder {
     public let headersFactory: HeadersFactory
 	public let queryEncoder: URLQueryEncoder
 	public let bodyEncoder: JSONEncoder

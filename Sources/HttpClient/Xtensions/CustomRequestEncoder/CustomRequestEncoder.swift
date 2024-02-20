@@ -10,7 +10,7 @@ import Combine
 import HttpClientUtilities
 import URLEncodedForm
 
-public protocol CustomizableRequestEncoder: RequestEncoder {
+public protocol CustomRequestEncoder: RequestEncoder {
     var headersFactory: HeadersFactory { get }
 
 	associatedtype QueryEncoder: TopLevelEncoder where QueryEncoder.Output == String
@@ -20,7 +20,7 @@ public protocol CustomizableRequestEncoder: RequestEncoder {
 	var bodyEncoder: BodyEncoder { get }
 }
 
-public extension CustomizableRequestEncoder {
+public extension CustomRequestEncoder {
 
 	func prepare<T: Encodable>(post url: URL, parameters: T) async throws -> URLRequest {
         let body = try (parameters as? TaggedData) ?? bodyEncoder.encode(parameters).tagged(with: [])
@@ -60,7 +60,7 @@ public extension CustomizableRequestEncoder {
 	}
 }
 
-public extension CustomizableRequestEncoder where BodyEncoder == JSONEncoder {
+public extension CustomRequestEncoder where BodyEncoder == JSONEncoder {
 
 	func prepare<T: Encodable>(post url: URL, parameters: T) async throws -> URLRequest {
         let body = try (parameters as? TaggedData) ?? .jsonEncoded(parameters, encoder: bodyEncoder)
@@ -87,7 +87,7 @@ public extension CustomizableRequestEncoder where BodyEncoder == JSONEncoder {
 	}
 }
 
-public extension CustomizableRequestEncoder where BodyEncoder == URLEncodedFormEncoder {
+public extension CustomRequestEncoder where BodyEncoder == URLEncodedFormEncoder {
 
 	func prepare<T: Encodable>(post url: URL, parameters: T) async throws -> URLRequest {
 		let body = try (parameters as? TaggedData) ?? .formURLEncoded(parameters, encoder: bodyEncoder)

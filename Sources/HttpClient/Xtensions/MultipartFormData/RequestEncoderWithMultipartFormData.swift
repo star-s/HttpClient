@@ -21,7 +21,7 @@ public extension RequestEncoderWithMultipartFormData {
 	}
 }
 
-public extension RequestEncoderWithMultipartFormData where Self: CustomizableRequestEncoder {
+public extension RequestEncoderWithMultipartFormData where Self: CustomRequestEncoder {
     func prepare(post url: URL, multipartFormData: @escaping (FormDataBuilder) -> Void) async throws -> URLRequest {
         let formData = MultipartFormData()
         multipartFormData(formData)

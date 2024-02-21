@@ -20,5 +20,5 @@ public extension URL {
 
 // MARK: - Implementation
 
-public extension HttpbinApi where Self: ApplicationLayer, Path: PathExpressibleByInterpolation {
+public extension HttpbinApi where Self: ApplicationLayer, Path: ExpressibleByStringInterpolation, Path.StringInterpolation == DefaultStringInterpolation {
 }

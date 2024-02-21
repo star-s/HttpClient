@@ -36,7 +36,7 @@ public extension URL {
 
 // MARK: - Implementation
 
-public extension JsonplaceholderApi where Self: ApplicationLayer, Path: PathExpressibleByInterpolation {
+public extension JsonplaceholderApi where Self: ApplicationLayer, Path: ExpressibleByStringInterpolation, Path.StringInterpolation == DefaultStringInterpolation {
 
 	func fetchPost(number: Int) async throws -> JsonplaceholderPost {
 		try await get("/posts/\(number)", parameters: Parameters.void)

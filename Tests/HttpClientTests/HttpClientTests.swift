@@ -45,7 +45,7 @@ final class HttpClientTests: XCTestCase {
 	}
 
 	func testAgify() async throws {
-		struct Agify: AgifyApi, HttpClientWithBaseUrl {
+		struct Agify: AgifyApi, HttpClientWithBaseURL {
 			typealias Path = String
 
 			let requestEncoder = JsonRequestEncoder()
@@ -60,7 +60,7 @@ final class HttpClientTests: XCTestCase {
 	}
 	
 	func testJsonplaceholder() async throws {
-		struct Jsonplaceholder: JsonplaceholderApi, HttpClientWithBaseUrl {
+		struct Jsonplaceholder: JsonplaceholderApi, HttpClientWithBaseURL {
 			typealias Path = String
 
 			let requestEncoder = JsonRequestEncoder()

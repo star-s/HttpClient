@@ -9,6 +9,9 @@ import Foundation
 
 public protocol OAuth2Client: HttpClient {
 
+    associatedtype Encoder: RequestEncoder = OAuth2RequestEncoder
+    associatedtype Decoder: ResponseDecoder = OAuth2ResponseDecoder<JSONDecoder>
+
     var clientID: String { get }
 
     var callbackURL: URL { get }

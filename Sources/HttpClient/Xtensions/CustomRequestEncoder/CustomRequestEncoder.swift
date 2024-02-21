@@ -13,10 +13,10 @@ import URLEncodedForm
 public protocol CustomRequestEncoder: RequestEncoder {
     var headersFactory: HeadersFactory { get }
 
-	associatedtype QueryEncoder: TopLevelEncoder where QueryEncoder.Output == String
+	associatedtype QueryEncoder: TopLevelEncoder = URLQueryEncoder where QueryEncoder.Output == String
 	var queryEncoder: QueryEncoder { get }
 
-	associatedtype BodyEncoder: TopLevelEncoder where BodyEncoder.Output == Data
+	associatedtype BodyEncoder: TopLevelEncoder = JSONEncoder where BodyEncoder.Output == Data
 	var bodyEncoder: BodyEncoder { get }
 }
 

@@ -12,7 +12,7 @@ extension URL {
 	static let openRpcBaseURL: URL = "https://mock.open-rpc.org"
 }
 
-struct OpenRpc<T: TransportLayer>: HttpClientWithBaseUrl, JsonRpcService {
+struct OpenRpc<T: TransportLayer>: HttpClientWithBaseURL, JsonRpcService {
 	typealias Path = String
 
 	let requestEncoder = JsonRpcRequestEncoder()

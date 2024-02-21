@@ -8,14 +8,15 @@
 import Foundation
 
 public protocol HttpClient: ApplicationLayer {
-	
-	associatedtype Encoder: RequestEncoder
+    associatedtype Path = URL
+
+	associatedtype Encoder: RequestEncoder = JsonRequestEncoder
 	var requestEncoder: Encoder { get }
 
-	associatedtype Decoder: ResponseDecoder
+	associatedtype Decoder: ResponseDecoder = DefaultResponseDecoder
 	var responseDecoder: Decoder { get }
 
-	associatedtype Transport: TransportLayer
+	associatedtype Transport: TransportLayer = URLSession
 	var transport: Transport { get }
 	
 	func makeURL(from path: Path) throws -> URL

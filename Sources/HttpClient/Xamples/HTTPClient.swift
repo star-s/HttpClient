@@ -8,8 +8,6 @@
 import Foundation
 
 public struct HTTPClient<E: RequestEncoder, D: ResponseDecoder, T: TransportLayer>: HttpClient {
-	public typealias Path = URL
-
 	public let requestEncoder: E
     public let responseDecoder: D
 

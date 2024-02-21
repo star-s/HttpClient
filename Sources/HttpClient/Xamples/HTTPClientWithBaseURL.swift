@@ -7,9 +7,7 @@
 
 import Foundation
 
-public struct HTTPClientWithBaseURL<E: RequestEncoder, D: ResponseDecoder, T: TransportLayer>: HttpClientWithBaseUrl {
-	public typealias Path = String
-
+public struct HTTPClientWithBaseURL<E: RequestEncoder, D: ResponseDecoder, T: TransportLayer>: HttpClientWithBaseURL {
 	public let requestEncoder: E
     public let responseDecoder: D
 

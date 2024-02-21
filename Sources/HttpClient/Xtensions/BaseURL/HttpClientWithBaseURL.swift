@@ -7,11 +7,13 @@
 
 import Foundation
 
-public protocol HttpClientWithBaseUrl: HttpClient {
+public protocol HttpClientWithBaseURL: HttpClient {
+    associatedtype Path = String
+
 	var baseURL: URL { get }
 }
 
-public extension HttpClientWithBaseUrl {
+public extension HttpClientWithBaseURL {
 	
 	func makeURL(from path: Path) throws -> URL {
 		guard let url = URL(string: String(describing: path), relativeTo: baseURL) else {

@@ -7,9 +7,12 @@
 
 import Foundation
 
-extension URL: ExpressibleByStringLiteral {
-    public init(stringLiteral value: StaticString) {
-		guard let url = value.description.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed).flatMap(URL.init(string:)) else {
+extension URL: ExpressibleByStringInterpolation {
+    public init(stringLiteral value: String) {
+		guard let url = value
+            .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+            .flatMap(URL.init(string:))
+        else {
             preconditionFailure("Invalid URL string: \(value)")
         }
         self = url

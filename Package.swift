@@ -42,6 +42,9 @@ let package = Package(
         .testTarget(
             name: "HttpClientTests",
             dependencies: ["HttpClient"]),
+        .testTarget(
+            name: "AlamofireStuffTests",
+            dependencies: ["HttpClientUtilities"]),
 		.testTarget(
 			name: "URLEncodedFormTests",
 			dependencies: ["URLEncodedForm"]

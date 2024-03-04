@@ -8,29 +8,53 @@
 import Foundation
 
 public extension HttpStatusCode {
-    static let informational: ClosedRange<HttpStatusCode>   = 100...199
-    static let successful:    ClosedRange<HttpStatusCode>   = 200...299
-    static let redirection:   ClosedRange<HttpStatusCode>   = 300...399
-    static let clientError:   ClosedRange<HttpStatusCode>   = 400...499
-    static let serverError:   ClosedRange<HttpStatusCode>   = 500...599
+    enum Class: CaseIterable {
+        case informational
+        case successful
+        case redirection
+        case clientError
+        case serverError
+
+        public var range: ClosedRange<HttpStatusCode> {
+            switch self {
+            case .informational:
+                return 100...199
+            case .successful:
+                return 200...299
+            case .redirection:
+                return 300...399
+            case .clientError:
+                return 400...499
+            case .serverError:
+                return 500...599
+            }
+        }
+    }
+
+    var `class`: Class {
+        guard let result = Class.allCases.first(where: { $0.range.contains(self) }) else {
+            fatalError("Wrong status code \(rawValue)")
+        }
+        return result
+    }
 
     var isInformational: Bool {
-        Self.informational.contains(self)
+        self.class == .informational
     }
 
     var isSuccessful: Bool {
-        Self.successful.contains(self)
+        self.class == .successful
     }
 
     var isRedirection: Bool {
-        Self.redirection.contains(self)
+        self.class == .redirection
     }
 
     var isClientError: Bool {
-        Self.clientError.contains(self)
+        self.class == .clientError
     }
 
     var isServerError: Bool {
-        Self.serverError.contains(self)
+        self.class == .serverError
     }
 }

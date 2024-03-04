@@ -22,10 +22,10 @@ public struct OAuth2ResponseDecoder<D: TopLevelDecoder>: ResponseDecoder where D
         guard let httpResponse = response.response as? HTTPURLResponse else {
             return
         }
-        switch httpResponse.httpStatusCode {
-        case HttpStatusCode.successful:
+        switch httpResponse.httpStatusCode.class {
+        case .successful:
             return
-        case HttpStatusCode.clientError, HttpStatusCode.serverError:
+        case .clientError, .serverError:
             throw try decoder.decode(AccessTokenError.self, from: response.data)
         default:
             throw httpResponse.httpStatusCode

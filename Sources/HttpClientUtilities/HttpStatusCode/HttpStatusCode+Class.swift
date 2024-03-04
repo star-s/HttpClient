@@ -15,6 +15,7 @@ public extension HttpStatusCode {
         case clientError
         case serverError
 
+        @inlinable
         public var range: ClosedRange<HttpStatusCode> {
             switch self {
             case .informational:

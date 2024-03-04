@@ -31,6 +31,7 @@ public extension HttpStatusCode {
         }
     }
 
+    @inlinable
     var `class`: Class {
         guard let result = Class.allCases.first(where: { $0.range.contains(self) }) else {
             fatalError("Wrong status code \(rawValue)")
@@ -38,22 +39,27 @@ public extension HttpStatusCode {
         return result
     }
 
+    @inlinable
     var isInformational: Bool {
         self.class == .informational
     }
 
+    @inlinable
     var isSuccessful: Bool {
         self.class == .successful
     }
 
+    @inlinable
     var isRedirection: Bool {
         self.class == .redirection
     }
 
+    @inlinable
     var isClientError: Bool {
         self.class == .clientError
     }
 
+    @inlinable
     var isServerError: Bool {
         self.class == .serverError
     }

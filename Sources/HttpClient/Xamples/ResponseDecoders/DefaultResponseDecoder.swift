@@ -16,7 +16,7 @@ public struct DefaultResponseDecoder: ResponseDecoder {
 	private let	formDecoder: URLEncodedFormDecoder
 
 	public init<R: RangeExpression>(
-        validStatusCodes: R = 200...299,
+        validStatusCodes: R = HttpStatusCode.successful,
 		jsonDecoder: JSONDecoder = JSONDecoder(),
 		formDecoder: URLEncodedFormDecoder = URLEncodedFormDecoder()
     ) where R.Bound == HttpStatusCode {

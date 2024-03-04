@@ -30,14 +30,9 @@ public extension HTTPURLResponse {
     }
 
     @inlinable
-    func checkHttpStatusCode<R: RangeExpression>(_ validRange: R) throws where R.Bound == HttpStatusCode {
-        guard validRange.contains(httpStatusCode) else {
-            throw httpStatusCode
-        }
-    }
-
-    @inlinable
-    func checkHttpStatusCode(_ validCodes: Set<HttpStatusCode> = .successful) throws {
+    func checkHttpStatusCode<R: RangeExpression>(
+        _ validCodes: R = HttpStatusCode.successful
+    ) throws where R.Bound == HttpStatusCode {
         guard validCodes.contains(httpStatusCode) else {
             throw httpStatusCode
         }

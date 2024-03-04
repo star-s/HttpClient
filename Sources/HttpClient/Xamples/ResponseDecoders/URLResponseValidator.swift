@@ -14,7 +14,7 @@ public extension ResponseDecoder {
 
     func withDefaultResponseValidator() -> URLResponseValidator<Self> {
         URLResponseValidator(responseDecoder: self) {
-            try $0.checkStatusCode(validRange: 200...299)
+            try ($0 as? HTTPURLResponse)?.checkHttpStatusCode(200...299)
         }
     }
 }

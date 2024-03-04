@@ -19,9 +19,9 @@ public struct DefaultResponseDecoder: ResponseDecoder {
         validStatusCodes: R = 200...299,
 		jsonDecoder: JSONDecoder = JSONDecoder(),
 		formDecoder: URLEncodedFormDecoder = URLEncodedFormDecoder()
-    ) where R.Bound == Int {
+    ) where R.Bound == HttpStatusCode {
         self.validator = {
-            try $0.checkStatusCode(validRange: validStatusCodes)
+            try ($0 as? HTTPURLResponse)?.checkHttpStatusCode(validStatusCodes)
         }
 		self.jsonDecoder = jsonDecoder
 		self.formDecoder = formDecoder

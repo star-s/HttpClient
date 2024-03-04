@@ -138,6 +138,18 @@ final class HttpClientTests: XCTestCase {
 		let cookies = exportedCookies.cookies
 		XCTAssertFalse(cookies.isEmpty)
 	}
+
+    // MARK: -
+
+    func testHttpStatusCode() {
+        do {
+            throw HttpStatusCode.unauthorized
+        } catch HttpStatusCode.unauthorized {
+            //
+        } catch {
+            XCTFail("Error \(error) in not catched!")
+        }
+    }
 }
 
 #if canImport(PDFKit)

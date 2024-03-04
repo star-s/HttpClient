@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import HttpClientUtilities
 
 public typealias OAuth2RequestEncoder = URLEncodedFormRequestEncoder
 
@@ -21,13 +22,13 @@ public struct OAuth2ResponseDecoder<D: TopLevelDecoder>: ResponseDecoder where D
         guard let httpResponse = response.response as? HTTPURLResponse else {
             return
         }
-        switch httpResponse.statusCode {
-        case 200...299:
+        switch httpResponse.httpStatusCode {
+        case HttpStatusCode.successful:
             return
-        case 400...599:
+        case HttpStatusCode.clientError, HttpStatusCode.serverError:
             throw try decoder.decode(AccessTokenError.self, from: response.data)
         default:
-            throw httpResponse
+            throw httpResponse.httpStatusCode
         }
     }
 

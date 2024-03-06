@@ -10,12 +10,12 @@ import Foundation
 public typealias JsonRpcRequestEncoder = JsonRequestEncoder
 
 public struct JsonRpcResponseDecoder: ResponseDecoder {
-    private let validator: ((URLResponse, Data) async throws -> Void)?
+    private let validator: ((URLResponse) async throws -> Void)?
     private let decoder: JSONDecoder
 
     public init(
         _ decoder: JSONDecoder = JSONDecoder(),
-        validator: ((URLResponse, Data) async throws -> Void)? = nil
+        validator: ((URLResponse) async throws -> Void)? = nil
     ) {
         self.validator = validator
         self.decoder = decoder
@@ -25,10 +25,13 @@ public struct JsonRpcResponseDecoder: ResponseDecoder {
         guard let validator else {
             return
         }
-        try await validator(response.response, response.data)
+        try await validator(response.response)
     }
 
     public func decode<T: Decodable>(response: (data: Data, response: URLResponse)) async throws -> T {
-        try decoder.decode(JsonRpcResponse<T>.self, from: response.data).result.get()
+        if T.self is [JsonRpcResponse<AnyDecodable>].Type {
+            return try decoder.decode(T.self, from: response.data)
+        }
+        return try decoder.decode(JsonRpcResponse<T>.self, from: response.data).result.get()
     }
 }

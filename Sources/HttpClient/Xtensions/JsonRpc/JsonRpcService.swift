@@ -23,7 +23,7 @@ public extension JsonRpcService {
 		try await post(endpoint, parameters: JsonRpcRequest(method: method, params: params))
 	}
 
-	/*func performBatch(requests: [JsonRpcRequest]) async throws -> JsonRpcBatchResponse {
+	func performBatch(requests: [JsonRpcRequest]) async throws -> [JsonRpcResponse<AnyDecodable>] {
 		try await post(endpoint, parameters: requests)
-	}*/
+	}
 }

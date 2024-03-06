@@ -12,9 +12,13 @@ public struct JsonRpcResponse<T> {
 	public let result: Result<T, JsonRpcError>
 	public let id: JsonRpcId
 
-	public init(jsonrpc: JsonRpcVersion = .v2_0, result: T, id: JsonRpcId = nil) {
+	public init(
+        jsonrpc: JsonRpcVersion = .v2_0,
+        result: Result<T, JsonRpcError>,
+        id: JsonRpcId = nil
+    ) {
 		self.jsonrpc = jsonrpc
-        self.result = .success(result)
+        self.result = result
 		self.id = id
 	}
 }

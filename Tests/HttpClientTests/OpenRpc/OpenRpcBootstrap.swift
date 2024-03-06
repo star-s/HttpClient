@@ -70,7 +70,7 @@ private extension URLRequest {
 		let result = try handler(request.params)
 
 		let responseData = try TaggedData.jsonEncoded(
-            JsonRpcResponse(result: result, id: request.id ?? .null)
+            JsonRpcResponse(result: .success(result), id: request.id ?? .null)
 		)
 		let response = HTTPURLResponse(
 			url: url,

@@ -16,8 +16,8 @@ struct OpenRpc<T: TransportLayer>: HttpClientWithBaseURL, JsonRpcService {
 	typealias Path = String
 
 	let requestEncoder = JsonRpcRequestEncoder()
-    let responseDecoder = JsonRpcResponseDecoder() { response, _ in
-        try response.asHTTPURLResponse().checkHttpStatusCode()
+    let responseDecoder = JsonRpcResponseDecoder() {
+        try $0.asHTTPURLResponse().checkHttpStatusCode()
     }
 
 	let transport: T

@@ -11,7 +11,27 @@ public struct JsonRpcError {
 	public let code: Int
 	public let message: String
 
+    public var hasData: Bool {
+        dataContainer.contains(.data)
+    }
+
 	private let dataContainer: KeyedDecodingContainer<CodingKeys>
+
+    public init(code: Int, message: String) {
+        self.code = code
+        self.message = message
+        self.dataContainer = KeyedDecodingContainer(EmptyKeyedContainer())
+    }
+
+    public init<T: Decodable>(code: Int, message: String, data: T?) {
+        self.code = code
+        self.message = message
+        if let data {
+            self.dataContainer = KeyedDecodingContainer(SingleValueContainer(key: .data, value: data))
+        } else {
+            self.dataContainer = KeyedDecodingContainer(EmptyKeyedContainer())
+        }
+    }
 
 	public func data<T: Decodable>(_ type: T.Type = T.self) throws -> T {
 		try dataContainer.decode(type, forKey: .data)

@@ -14,7 +14,12 @@ public struct JsonRpcRequest {
 
 	private let paramsEncoder: (inout KeyedEncodingContainer<CodingKeys>) throws -> Void
 
-	public init<T: Encodable>(version: JsonRpcVersion = .v2_0, method: String, params: T, id: JsonRpcId? = nil) {
+	public init<T: Encodable>(
+        version: JsonRpcVersion = .v2_0,
+        method: String,
+        params: T,
+        id: JsonRpcId? = nil
+    ) {
 		self.jsonrpc = version
 		self.method = method
 		self.paramsEncoder = { try $0.encode(params, forKey: .params) }

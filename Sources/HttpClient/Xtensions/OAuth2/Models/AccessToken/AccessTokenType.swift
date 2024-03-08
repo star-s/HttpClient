@@ -25,6 +25,6 @@ public struct AccessTokenType: RawRepresentable, ExpressibleByStringLiteral, Has
 }
 
 public extension AccessTokenType {
-	static let bearer = AccessTokenType(rawValue: "bearer")
-	static let mac = AccessTokenType(rawValue: "mac")
+    static let bearer: AccessTokenType  = "bearer"
+    static let mac: AccessTokenType     = "mac"
 }

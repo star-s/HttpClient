@@ -11,7 +11,8 @@ import HttpClientUtilities
 import URLEncodedForm
 
 public protocol CustomRequestEncoder: RequestEncoder {
-    var headersFactory: HeadersFactory { get }
+    var defaultHeaders: HTTPHeaders { get}
+    var requestAuthorizer: RequestAuthorizer? { get }
 
 	associatedtype QueryEncoder: TopLevelEncoder = URLQueryEncoder where QueryEncoder.Output == String
 	var queryEncoder: QueryEncoder { get }
@@ -26,37 +27,42 @@ public extension CustomRequestEncoder {
         let body = try (parameters as? TaggedData) ?? bodyEncoder.encode(parameters).tagged(with: [])
         return try await URLRequest(url: url)
             .with(method: .post)
-            .with(headers: headersFactory.makeHeaders(for: url, method: .post))
+            .with(headers: defaultHeaders)
             .with(body: body)
+            .authorize(with: requestAuthorizer)
 	}
 
 	func prepare<T: Encodable>(get url: URL, parameters: T) async throws -> URLRequest {
 		try await URLRequest(url: url)
-            .with(headers: headersFactory.makeHeaders(for: url, method: .get))
+            .with(headers: defaultHeaders)
             .with(query: queryEncoder.encode(parameters))
+            .authorize(with: requestAuthorizer)
 	}
 
 	func prepare<T: Encodable>(put url: URL, parameters: T) async throws -> URLRequest {
         let body = try (parameters as? TaggedData) ?? bodyEncoder.encode(parameters).tagged(with: [])
 		return try await URLRequest(url: url)
             .with(method: .put)
-            .with(headers: headersFactory.makeHeaders(for: url, method: .put))
+            .with(headers: defaultHeaders)
             .with(body: body)
+            .authorize(with: requestAuthorizer)
 	}
 
 	func prepare<T: Encodable>(patch url: URL, parameters: T) async throws -> URLRequest {
         let body = try (parameters as? TaggedData) ?? bodyEncoder.encode(parameters).tagged(with: [])
 		return try await URLRequest(url: url)
             .with(method: .patch)
-            .with(headers: headersFactory.makeHeaders(for: url, method: .patch))
+            .with(headers: defaultHeaders)
             .with(body: body)
+            .authorize(with: requestAuthorizer)
 	}
 
 	func prepare<T: Encodable>(delete url: URL, parameters: T) async throws -> URLRequest {
 		try await URLRequest(url: url)
             .with(method: .delete)
-            .with(headers: headersFactory.makeHeaders(for: url, method: .delete))
+            .with(headers: defaultHeaders)
             .with(query: queryEncoder.encode(parameters))
+            .authorize(with: requestAuthorizer)
 	}
 }
 
@@ -66,24 +72,27 @@ public extension CustomRequestEncoder where BodyEncoder == JSONEncoder {
         let body = try (parameters as? TaggedData) ?? .jsonEncoded(parameters, encoder: bodyEncoder)
 		return try await URLRequest(url: url)
             .with(method: .post)
-            .with(headers: headersFactory.makeHeaders(for: url, method: .post))
+            .with(headers: defaultHeaders)
             .with(body: body)
+            .authorize(with: requestAuthorizer)
 	}
 
 	func prepare<T: Encodable>(put url: URL, parameters: T) async throws -> URLRequest {
         let body = try (parameters as? TaggedData) ?? .jsonEncoded(parameters, encoder: bodyEncoder)
 		return try await URLRequest(url: url)
             .with(method: .put)
-            .with(headers: headersFactory.makeHeaders(for: url, method: .put))
+            .with(headers: defaultHeaders)
             .with(body: body)
+            .authorize(with: requestAuthorizer)
 	}
 
 	func prepare<T: Encodable>(patch url: URL, parameters: T) async throws -> URLRequest {
 		let body = try (parameters as? TaggedData) ?? .jsonEncoded(parameters, encoder: bodyEncoder)
 		return try await URLRequest(url: url)
             .with(method: .patch)
-            .with(headers: headersFactory.makeHeaders(for: url, method: .patch))
+            .with(headers: defaultHeaders)
             .with(body: body)
+            .authorize(with: requestAuthorizer)
 	}
 }
 
@@ -93,23 +102,26 @@ public extension CustomRequestEncoder where BodyEncoder == URLEncodedFormEncoder
 		let body = try (parameters as? TaggedData) ?? .formURLEncoded(parameters, encoder: bodyEncoder)
 		return try await URLRequest(url: url)
             .with(method: .post)
-            .with(headers: headersFactory.makeHeaders(for: url, method: .post))
+            .with(headers: defaultHeaders)
             .with(body: body)
+            .authorize(with: requestAuthorizer)
 	}
 
 	func prepare<T: Encodable>(put url: URL, parameters: T) async throws -> URLRequest {
         let body = try (parameters as? TaggedData) ?? .formURLEncoded(parameters, encoder: bodyEncoder)
 		return try await URLRequest(url: url)
             .with(method: .put)
-            .with(headers: headersFactory.makeHeaders(for: url, method: .put))
+            .with(headers: defaultHeaders)
             .with(body: body)
+            .authorize(with: requestAuthorizer)
 	}
 
 	func prepare<T: Encodable>(patch url: URL, parameters: T) async throws -> URLRequest {
         let body = try (parameters as? TaggedData) ?? .formURLEncoded(parameters, encoder: bodyEncoder)
 		return try await URLRequest(url: url)
             .with(method: .patch)
-            .with(headers: headersFactory.makeHeaders(for: url, method: .patch))
+            .with(headers: defaultHeaders)
             .with(body: body)
+            .authorize(with: requestAuthorizer)
 	}
 }

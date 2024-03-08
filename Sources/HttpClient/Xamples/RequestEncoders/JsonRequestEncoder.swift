@@ -9,27 +9,19 @@ import Foundation
 import HttpClientUtilities
 
 public struct JsonRequestEncoder: CustomRequestEncoder {
-    public let headersFactory: HeadersFactory
+    public let defaultHeaders: HTTPHeaders
+    public let requestAuthorizer: RequestAuthorizer?
 	public let queryEncoder: URLQueryEncoder
 	public let bodyEncoder: JSONEncoder
 
-	public init(
-        headersFactory: HeadersFactory = HTTPHeaders.default,
-		queryEncoder: URLQueryEncoder = URLQueryEncoder(),
-		bodyEncoder: JSONEncoder = JSONEncoder()
-	) {
-        self.headersFactory = headersFactory
-        self.queryEncoder = queryEncoder
-        self.bodyEncoder = bodyEncoder
-    }
-
     public init(
-        headers: HTTPHeaders = .default,
-        headersAuthorizer: HeadersAuthorizer,
+        defaultHeaders: HTTPHeaders = .default,
+        requestAuthorizer: RequestAuthorizer? = nil,
         queryEncoder: URLQueryEncoder = URLQueryEncoder(),
         bodyEncoder: JSONEncoder = JSONEncoder()
     ) {
-        self.headersFactory = headers.factory(with: headersAuthorizer)
+        self.defaultHeaders = defaultHeaders
+        self.requestAuthorizer = requestAuthorizer
         self.queryEncoder = queryEncoder
         self.bodyEncoder = bodyEncoder
     }

@@ -25,10 +25,10 @@ extension ClientCredentials: Codable {
     }
 }
 
-extension ClientCredentials: HeadersAuthorizer {
-    public func authorize(headers: HTTPHeaders) async throws -> HTTPHeaders {
-        var headers = headers
-        headers.add(.authorization(username: clientId, password: clientSecret))
-        return headers
+extension ClientCredentials: RequestAuthorizer {
+    public func authorizer(request: URLRequest) async throws -> URLRequest {
+        var request = request
+        request.headers.add(.authorization(username: clientId, password: clientSecret))
+        return request
     }
 }

@@ -27,7 +27,8 @@ public extension RequestEncoderWithMultipartFormData where Self: CustomRequestEn
         multipartFormData(formData)
         return try await URLRequest(url: url)
             .with(method: .post)
-            .with(headers: headersFactory.makeHeaders(for: url, method: .post))
+            .with(headers: defaultHeaders)
             .with(body: formData)
+            .authorize(with: requestAuthorizer)
     }
 }

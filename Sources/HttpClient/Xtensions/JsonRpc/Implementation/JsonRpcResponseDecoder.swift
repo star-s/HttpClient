@@ -7,8 +7,6 @@
 
 import Foundation
 
-public typealias JsonRpcRequestEncoder = JsonRequestEncoder
-
 public struct JsonRpcResponseDecoder: ResponseDecoder {
     private let validator: ((URLResponse) async throws -> Void)?
     private let decoder: JSONDecoder

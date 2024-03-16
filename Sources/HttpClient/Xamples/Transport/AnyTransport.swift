@@ -24,9 +24,3 @@ public struct AnyTransport: TransportLayer {
         try await transport(request)
     }
 }
-
-public extension TransportLayer {
-    func eraseToAnyTransport() -> AnyTransport {
-        AnyTransport(self)
-    }
-}

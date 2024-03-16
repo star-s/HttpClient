@@ -34,9 +34,3 @@ public struct AnyRequestEncoder: RequestEncoder {
         try await encoder.prepare(delete: url, parameters: parameters)
     }
 }
-
-public extension RequestEncoder {
-    func eraseToAnyRequestEncoder() -> AnyRequestEncoder {
-        AnyRequestEncoder(self)
-    }
-}

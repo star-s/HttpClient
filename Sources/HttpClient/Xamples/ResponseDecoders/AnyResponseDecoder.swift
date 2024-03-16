@@ -22,9 +22,3 @@ public struct AnyResponseDecoder: ResponseDecoder {
         try await decoder.decode(response: response)
     }
 }
-
-public extension ResponseDecoder {
-    func eraseToAnyResponseDecoder() -> AnyResponseDecoder {
-        AnyResponseDecoder(self)
-    }
-}

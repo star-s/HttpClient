@@ -14,8 +14,8 @@ final public class DefaultPresentationContextProvider: NSObject, ASWebAuthentica
         return UIApplication
             .shared
             .connectedScenes
-            .filter({ $0.activationState == .foregroundActive })
-            .compactMap({ $0 as? UIWindowScene })
+            .filter { $0.activationState == .foregroundActive }
+            .compactMap { $0 as? UIWindowScene }
             .first?
             .windows
             .first(where: { $0.isKeyWindow }) ?? ASPresentationAnchor()

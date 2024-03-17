@@ -22,6 +22,9 @@ let package = Package(
 		.library(
 			name: "URLEncodedForm",
 			targets: ["URLEncodedForm"]),
+        .library(
+            name: "HttpClientMocks",
+            targets: ["HttpClientMocks"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -33,6 +36,9 @@ let package = Package(
         .target(
             name: "HttpClient",
             dependencies: ["HttpClientUtilities", "URLEncodedForm"]),
+        .target(
+            name: "HttpClientMocks",
+            dependencies: ["HttpClient", "HttpClientUtilities"]),
 		.target(
 			name: "HttpClientUtilities",
 			dependencies: ["URLEncodedForm"]),

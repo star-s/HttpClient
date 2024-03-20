@@ -56,9 +56,9 @@ public struct ResourceLoader {
         ) else {
             throw CocoaError(.fileNoSuchFile)
         }
-        let data = try Data(contentsOf: url).tagged(with: [])
+        let data = try Data(contentsOf: url)
         guard let mimeType = type.preferredMIMEType else {
-            return data
+            return data.tagged(with: [])
         }
         return data.tagged(.mimeType(mimeType))
     }
